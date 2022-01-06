@@ -1,0 +1,1948 @@
+import random
+import itertools
+import copy
+
+rrank_1 = [['a1', [0, 0], ['R', 'W']], ['b1', [1, 0], ['N', 'W']], ['c1', [2, 0], ['B', 'W']],
+           ['d1', [3, 0], ['Q', 'W']], ['e1', [4, 0], ['K', 'W']], ['f1', [5, 0], ['B', 'W']],
+           ['g1', [6, 0], ['N', 'W']], ['h1', [7, 0], ['R', 'W']]]
+rrank_2 = [['a2', [0, 1], ['P', 'W']], ['b2', [1, 1], ['P', 'W']], ['c2', [2, 1], ['P', 'W']],
+           ['d2', [3, 1], ['P', 'W']], ['e2', [4, 1], ['P', 'W']], ['f2', [5, 1], ['P', 'W']],
+           ['g2', [6, 1], ['P', 'W']], ['h2', [7, 1], ['P', 'W']]]
+rrank_3 = [['a3', [0, 2], [0, 0]], ['b3', [1, 2], [0, 0]], ['c3', [2, 2], [0, 0]], ['d3', [3, 2], [0, 0]],
+           ['e3', [4, 2], [0, 0]], ['f3', [5, 2], [0, 0]], ['g3', [6, 2], [0, 0]], ['h3', [7, 2], [0, 0]]]
+rrank_4 = [['a4', [0, 3], [0, 0]], ['b4', [1, 3], [0, 0]], ['c4', [2, 3], [0, 0]], ['d4', [3, 3], [0, 0]],
+           ['e4', [4, 3], [0, 0]], ['f4', [5, 3], [0, 0]], ['g4', [6, 3], [0, 0]], ['h4', [7, 3], [0, 0]]]
+rrank_5 = [['a5', [0, 4], [0, 0]], ['b5', [1, 4], [0, 0]], ['c5', [2, 4], [0, 0]], ['d5', [3, 4], [0, 0]],
+           ['e5', [4, 4], [0, 0]], ['f5', [5, 4], [0, 0]], ['g5', [6, 4], [0, 0]], ['h5', [7, 4], [0, 0]]]
+rrank_6 = [['a6', [0, 5], [0, 0]], ['b6', [1, 5], [0, 0]], ['c6', [2, 5], [0, 0]], ['d6', [3, 5], [0, 0]],
+           ['e6', [4, 5], [0, 0]], ['f6', [5, 5], [0, 0]], ['g6', [6, 5], [0, 0]], ['h6', [7, 5], [0, 0]]]
+rrank_7 = [['a7', [0, 6], ['P', 'B']], ['b7', [1, 6], ['P', 'B']], ['c7', [2, 6], ['P', 'B']],
+           ['d7', [3, 6], ['P', 'B']], ['e7', [4, 6], ['P', 'B']], ['f7', [5, 6], ['P', 'B']],
+           ['g7', [6, 6], ['P', 'B']], ['h7', [7, 6], ['P', 'B']]]
+rrank_8 = [['a8', [0, 7], ['R', 'B']], ['b8', [1, 7], ['N', 'B']], ['c8', [2, 7], ['B', 'B']],
+           ['d8', [3, 7], ['Q', 'B']], ['e8', [4, 7], ['K', 'B']], ['f8', [5, 7], ['B', 'B']],
+           ['g8', [6, 7], ['N', 'B']], ['h8', [7, 7], ['R', 'B']]]
+bboard = [rrank_1, rrank_2, rrank_3, rrank_4, rrank_5, rrank_6, rrank_7, rrank_8]
+
+empty_rank_1 = [['a1', [0, 0], [0, 0]], ['b1', [1, 0], [0, 0]], ['c1', [2, 0], ['R', 'W']], ['d1', [3, 0], [0, 0]],
+                ['e1', [4, 0], [0, 0]], ['f1', [5, 0], [0, 0]], ['g1', [6, 0], [0, 0]], ['h1', [7, 0], [0, 0]]]
+empty_rank_2 = [['a2', [0, 1], [0, 0]], ['b2', [1, 1], ['R', 'W']], ['c2', [2, 1], [0, 0]], ['d2', [3, 1], [0, 0]],
+                ['e2', [4, 1], [0, 0]], ['f2', [5, 1], [0, 0]], ['g2', [6, 1], [0, 0]], ['h2', [7, 1], [0, 0]]]
+empty_rank_3 = [['a3', [0, 2], [0, 0]], ['b3', [1, 2], [0, 0]], ['c3', [2, 2], [0, 0]], ['d3', [3, 2], [0, 0]],
+                ['e3', [4, 2], [0, 0]], ['f3', [5, 2], [0, 0]], ['g3', [6, 2], [0, 0]], ['h3', [7, 2], [0, 0]]]
+empty_rank_4 = [['a4', [0, 3], [0, 0]], ['b4', [1, 3], [0, 0]], ['c4', [2, 3], [0, 0]], ['d4', [3, 3], [0, 0]],
+                ['e4', [4, 3], [0, 0]], ['f4', [5, 3], [0, 0]], ['g4', [6, 3], [0, 0]], ['h4', [7, 3], [0, 0]]]
+empty_rank_5 = [['a5', [0, 4], [0, 0]], ['b5', [1, 4], [0, 0]], ['c5', [2, 4], [0, 0]], ['d5', [3, 4], [0, 0]],
+                ['e5', [4, 4], [0, 0]], ['f5', [5, 4], [0, 0]], ['g5', [6, 4], [0, 0]], ['h5', [7, 4], [0, 0]]]
+empty_rank_6 = [['a6', [0, 5], [0, 0]], ['b6', [1, 5], [0, 0]], ['c6', [2, 5], [0, 0]], ['d6', [3, 5], [0, 0]],
+                ['e6', [4, 5], [0, 0]], ['f6', [5, 5], [0, 0]], ['g6', [6, 5], [0, 0]], ['h6', [7, 5], [0, 0]]]
+empty_rank_7 = [['a7', [0, 6], [0, 0]], ['b7', [1, 6], [0, 0]], ['c7', [2, 6], [0, 0]], ['d7', [3, 6], [0, 0]],
+                ['e7', [4, 6], [0, 0]], ['f7', [5, 6], [0, 0]], ['g7', [6, 6], [0, 0]], ['h7', [7, 6], [0, 0]]]
+empty_rank_8 = [['a8', [0, 7], ['K', 'B']], ['b8', [1, 7], [0, 0]], ['c8', [2, 7], [0, 0]], ['d8', [3, 7], [0, 0]],
+                ['e8', [4, 7], [0, 0]], ['f8', [5, 7], [0, 0]], ['g8', [6, 7], [0, 0]], ['h8', [7, 7], ['K', 'W']]]
+empty_board = [empty_rank_1, empty_rank_2, empty_rank_3, empty_rank_4, empty_rank_5, empty_rank_6, empty_rank_7,
+               empty_rank_8]
+
+
+def piece_finder(board_state, move_state):
+    piece_positions = []
+    for rank in board_state:
+        for square in rank:
+            if square[2] != [0, 0] and square[2][1] == move_state:
+                piece_positions.append([square[1], square[2]])
+    return piece_positions
+
+
+def all_rook_moves(board_state, rook_position):
+    possible_rook_moves = []
+    rook_x_position = rook_position[0][0]
+    rook_y_position = rook_position[0][1]
+    new_rook_x_position = rook_x_position
+    new_rook_y_position = rook_y_position
+    while new_rook_x_position < 7:
+        new_rook_x_position += 1
+        if board_state[rook_y_position][new_rook_x_position][2][1] == rook_position[1][1]:
+            break
+        elif board_state[rook_y_position][new_rook_x_position][2][1] == 0:
+            possible_rook_moves.append([rook_position[0], [new_rook_x_position, rook_y_position]])
+        else:
+            possible_rook_moves.append([rook_position[0], [new_rook_x_position, rook_y_position]])
+            break
+    new_rook_x_position = rook_x_position
+    while new_rook_x_position > 0:
+        new_rook_x_position -= 1
+        if board_state[rook_y_position][new_rook_x_position][2][1] == rook_position[1][1]:
+            break
+        elif board_state[rook_y_position][new_rook_x_position][2][1] == 0:
+            possible_rook_moves.append([rook_position[0], [new_rook_x_position, rook_y_position]])
+        else:
+            possible_rook_moves.append([rook_position[0], [new_rook_x_position, rook_y_position]])
+            break
+    while new_rook_y_position < 7:
+        new_rook_y_position += 1
+        if board_state[new_rook_y_position][rook_x_position][2][1] == rook_position[1][1]:
+            break
+        elif board_state[new_rook_y_position][rook_x_position][2][1] == 0:
+            possible_rook_moves.append([rook_position[0], [rook_x_position, new_rook_y_position]])
+        else:
+            possible_rook_moves.append([rook_position[0], [rook_x_position, new_rook_y_position]])
+            break
+    new_rook_y_position = rook_y_position
+    while new_rook_y_position > 0:
+        new_rook_y_position -= 1
+        if board_state[new_rook_y_position][rook_x_position][2][1] == rook_position[1][1]:
+            break
+        elif board_state[new_rook_y_position][rook_x_position][2][1] == 0:
+            possible_rook_moves.append([rook_position[0], [rook_x_position, new_rook_y_position]])
+        else:
+            possible_rook_moves.append([rook_position[0], [rook_x_position, new_rook_y_position]])
+            break
+    return possible_rook_moves
+
+
+def all_bishop_moves(board_state, bishop_position):
+    possible_bishop_moves = []
+    bishop_x_position = bishop_position[0][0]
+    bishop_y_position = bishop_position[0][1]
+    new_bishop_x_position = bishop_x_position
+    new_bishop_y_position = bishop_y_position
+    while new_bishop_x_position < 7 and new_bishop_y_position < 7:
+        new_bishop_x_position += 1
+        new_bishop_y_position += 1
+        if board_state[new_bishop_y_position][new_bishop_x_position][2][1] == bishop_position[1][1]:
+            break
+        elif board_state[new_bishop_y_position][new_bishop_x_position][2][1] == 0:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+        else:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+            break
+    new_bishop_x_position = bishop_x_position
+    new_bishop_y_position = bishop_y_position
+    while new_bishop_x_position < 7 and new_bishop_y_position > 0:
+        new_bishop_x_position += 1
+        new_bishop_y_position -= 1
+        if board_state[new_bishop_y_position][new_bishop_x_position][2][1] == bishop_position[1][1]:
+            break
+        elif board_state[new_bishop_y_position][new_bishop_x_position][2][1] == 0:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+        else:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+            break
+    new_bishop_x_position = bishop_x_position
+    new_bishop_y_position = bishop_y_position
+    while new_bishop_x_position > 0 and new_bishop_y_position < 7:
+        new_bishop_x_position -= 1
+        new_bishop_y_position += 1
+        if board_state[new_bishop_y_position][new_bishop_x_position][2][1] == bishop_position[1][1]:
+            break
+        elif board_state[new_bishop_y_position][new_bishop_x_position][2][1] == 0:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+        else:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+            break
+    new_bishop_x_position = bishop_x_position
+    new_bishop_y_position = bishop_y_position
+    while new_bishop_x_position > 0 and new_bishop_y_position > 0:
+        new_bishop_x_position -= 1
+        new_bishop_y_position -= 1
+        if board_state[new_bishop_y_position][new_bishop_x_position][2][1] == bishop_position[1][1]:
+            break
+        elif board_state[new_bishop_y_position][new_bishop_x_position][2][1] == 0:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+        else:
+            possible_bishop_moves.append([bishop_position[0], [new_bishop_x_position, new_bishop_y_position]])
+            break
+    return possible_bishop_moves
+
+
+def all_queen_moves(board_state, queen_position):
+    lateral_moves = all_rook_moves(board_state, queen_position)
+    diagonal_moves = all_bishop_moves(board_state, queen_position)
+    lateral_moves.extend(diagonal_moves)
+    return lateral_moves
+
+
+def all_knight_moves(board_state, knight_position):
+    possible_knight_moves = []
+    impossible_knight_moves = []
+    knight_x_position = knight_position[0][0]
+    knight_y_position = knight_position[0][1]
+    possible_knight_moves.append([knight_position[0], [knight_x_position + 2, knight_y_position + 1]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position + 2, knight_y_position - 1]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position - 2, knight_y_position + 1]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position - 2, knight_y_position - 1]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position + 1, knight_y_position + 2]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position + 1, knight_y_position - 2]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position - 1, knight_y_position + 2]])
+    possible_knight_moves.append([knight_position[0], [knight_x_position - 1, knight_y_position - 2]])
+    for knight_move in possible_knight_moves:
+        if knight_move[1][0] > 7 or knight_move[1][0] < 0 or knight_move[1][1] > 7 or knight_move[1][1] < 0:
+            impossible_knight_moves.append(knight_move)
+    for impossible_knight_move in impossible_knight_moves:
+        possible_knight_moves.remove(impossible_knight_move)
+    for possible_knight_move in possible_knight_moves:
+        if board_state[possible_knight_move[1][1]][possible_knight_move[1][0]][2][1] == knight_position[1][1]:
+            impossible_knight_moves.append(possible_knight_move)
+    for impossible_knight_move in impossible_knight_moves:
+        try:
+            possible_knight_moves.remove(impossible_knight_move)
+        except ValueError:
+            continue
+    return possible_knight_moves
+
+
+def all_king_moves(board_state, king_position):
+    possible_king_moves = []
+    impossible_king_moves = []
+    king_x_position = king_position[0][0]
+    king_y_position = king_position[0][1]
+    possible_king_moves.append([king_position[0], [king_x_position + 1, king_y_position]])
+    possible_king_moves.append([king_position[0], [king_x_position + 1, king_y_position + 1]])
+    possible_king_moves.append([king_position[0], [king_x_position + 1, king_y_position - 1]])
+    possible_king_moves.append([king_position[0], [king_x_position - 1, king_y_position]])
+    possible_king_moves.append([king_position[0], [king_x_position - 1, king_y_position + 1]])
+    possible_king_moves.append([king_position[0], [king_x_position - 1, king_y_position - 1]])
+    possible_king_moves.append([king_position[0], [king_x_position, king_y_position + 1]])
+    possible_king_moves.append([king_position[0], [king_x_position, king_y_position - 1]])
+    for king_move in possible_king_moves:
+        if king_move[1][0] > 7 or king_move[1][0] < 0 or king_move[1][1] > 7 or king_move[1][1] < 0:
+            impossible_king_moves.append(king_move)
+    for impossible_king_move in impossible_king_moves:
+        possible_king_moves.remove(impossible_king_move)
+    for possible_king_move in possible_king_moves:
+        if board_state[possible_king_move[1][1]][possible_king_move[1][0]][2][1] == king_position[1][1]:
+            impossible_king_moves.append(possible_king_move)
+    for impossible_king_move in impossible_king_moves:
+        try:
+            possible_king_moves.remove(impossible_king_move)
+        except ValueError:
+            continue
+    return possible_king_moves
+
+
+def all_pawn_moves(board_state, pawn_position):
+    promotion_pieces = ['R', 'N', 'B', 'Q']
+    if pawn_position[1][1] == 'W':
+        pawn_direction = 1
+        opponent_colour = 'B'
+        second_rank = 1
+        seventh_rank = 6
+    else:
+        pawn_direction = -1
+        opponent_colour = 'W'
+        second_rank = 6
+        seventh_rank = 1
+    possible_pawn_moves = []
+    pawn_x_position = pawn_position[0][0]
+    pawn_y_position = pawn_position[0][1]
+    if board_state[pawn_y_position + pawn_direction][pawn_x_position][2][1] == 0:
+        if pawn_y_position == seventh_rank:
+            for piece in promotion_pieces:
+                possible_pawn_moves.append([pawn_position[0], [pawn_x_position, piece]])
+        else:
+            possible_pawn_moves.append([pawn_position[0], [pawn_x_position, pawn_y_position + pawn_direction]])
+        if pawn_y_position == second_rank and board_state[pawn_y_position + pawn_direction][pawn_x_position][2][
+            1] == 0 and board_state[pawn_y_position + 2 * pawn_direction][pawn_x_position][2][1] == 0:
+            possible_pawn_moves.append([pawn_position[0], [pawn_x_position, pawn_y_position + 2 * pawn_direction]])
+    if pawn_position[0][0] != 0 and board_state[pawn_y_position + pawn_direction][pawn_x_position - 1][2][
+        1] == opponent_colour:
+        if pawn_y_position == seventh_rank:
+            for piece in promotion_pieces:
+                possible_pawn_moves.append([pawn_position[0], [pawn_x_position - 1, piece]])
+        else:
+            possible_pawn_moves.append([pawn_position[0], [pawn_x_position - 1, pawn_y_position + pawn_direction]])
+    if pawn_position[0][0] != 7 and board_state[pawn_y_position + pawn_direction][pawn_x_position + 1][2][
+        1] == opponent_colour:
+        if pawn_y_position == seventh_rank:
+            for piece in promotion_pieces:
+                possible_pawn_moves.append([pawn_position[0], [pawn_x_position + 1, piece]])
+        else:
+            possible_pawn_moves.append([pawn_position[0], [pawn_x_position + 1, pawn_y_position + pawn_direction]])
+    return possible_pawn_moves
+
+
+def all_moves_finder(board_state, move_state):
+    all_pieces_moves = []
+    for piece_position in piece_finder(board_state, move_state):
+        if piece_position[1][0] == 'P':
+            for pawn_move in all_pawn_moves(board_state, piece_position):
+                all_pieces_moves.append(pawn_move)
+        if piece_position[1][0] == 'R':
+            for rook_move in all_rook_moves(board_state, piece_position):
+                all_pieces_moves.append(rook_move)
+        if piece_position[1][0] == 'N':
+            for knight_move in all_knight_moves(board_state, piece_position):
+                all_pieces_moves.append(knight_move)
+        if piece_position[1][0] == 'B':
+            for bishop_move in all_bishop_moves(board_state, piece_position):
+                all_pieces_moves.append(bishop_move)
+        if piece_position[1][0] == 'Q':
+            for queen_move in all_queen_moves(board_state, piece_position):
+                all_pieces_moves.append(queen_move)
+        if piece_position[1][0] == 'K':
+            for king_move in all_king_moves(board_state, piece_position):
+                all_pieces_moves.append(king_move)
+    return all_pieces_moves
+
+
+def position_creater(board_state, move):
+    if move == ['O-O', 'W']:
+        board_state[0][4][2] = [0, 0]
+        board_state[0][7][2] = [0, 0]
+        board_state[0][5][2] = ['R', 'W']
+        board_state[0][6][2] = ['K', 'W']
+    elif move == ['O-O-O', 'W']:
+        board_state[0][4][2] = [0, 0]
+        board_state[0][0][2] = [0, 0]
+        board_state[0][3][2] = ['R', 'W']
+        board_state[0][2][2] = ['K', 'W']
+    elif move == ['O-O', 'B']:
+        board_state[7][4][2] = [0, 0]
+        board_state[7][7][2] = [0, 0]
+        board_state[7][5][2] = ['R', 'B']
+        board_state[7][6][2] = ['K', 'B']
+    elif move == ['O-O-O', 'B']:
+        board_state[7][4][2] = [0, 0]
+        board_state[7][0][2] = [0, 0]
+        board_state[7][3][2] = ['R', 'B']
+        board_state[7][2][2] = ['K', 'B']
+    elif type(move[1][1]) != int:
+        if move[0][1] == 6:
+            board_state[7][move[1][0]][2] = [move[1][1], 'W']
+        elif move[0][1] == 1:
+            board_state[0][move[1][0]][2] = [move[1][1], 'B']
+        board_state[move[0][1]][move[0][0]][2] = [0, 0]
+    else:
+        board_state[move[1][1]][move[1][0]][2] = board_state[move[0][1]][move[0][0]][2]
+        board_state[move[0][1]][move[0][0]][2] = [0, 0]
+    return board_state
+
+def captured_piece_finder(board_state, move_state, move):
+    if move_state == 'W':
+        eighth_rank = 7
+    if move_state == 'B':
+        eighth_rank = 0
+    if move[0] == 'O-O' or move[0] == 'O-O-O':
+        captured_piece = [0, 0]
+    elif type(move[1][1]) != int:
+        captured_piece = board_state[eighth_rank][move[1][0]][2]
+    else:
+        captured_piece = board_state[move[1][1]][move[1][0]][2]
+    return captured_piece
+
+def move_reverser(board_state, move, captured_piece):
+    if move == ['O-O', 'W']:
+        board_state[0][4][2] = ['K', 'W']
+        board_state[0][7][2] = ['R', 'W']
+        board_state[0][5][2] = [0, 0]
+        board_state[0][6][2] = [0, 0]
+    elif move == ['O-O-O', 'W']:
+        board_state[0][4][2] = ['K', 'W']
+        board_state[0][0][2] = ['R', 'W']
+        board_state[0][3][2] = [0, 0]
+        board_state[0][2][2] = [0, 0]
+    elif move == ['O-O', 'B']:
+        board_state[7][4][2] = ['K', 'B']
+        board_state[7][7][2] = ['R', 'B']
+        board_state[7][5][2] = [0, 0]
+        board_state[7][6][2] = [0, 0]
+    elif move == ['O-O-O', 'B']:
+        board_state[7][4][2] = ['K', 'B']
+        board_state[7][0][2] = ['R', 'B']
+        board_state[7][3][2] = [0, 0]
+        board_state[7][2][2] = [0, 0]
+    elif type(move[1][1]) != int:
+        if move[0][1] == 6:
+            eighth_rank = 7
+            colour = 'W'
+        elif move[0][1] == 1:
+            eighth_rank = 0
+            colour = 'B'
+        board_state[eighth_rank][move[1][0]][2] = captured_piece
+        board_state[move[0][1]][move[0][0]][2] = ['P', colour]
+    else:
+        board_state[move[0][1]][move[0][0]][2] = board_state[move[1][1]][move[1][0]][2]
+        board_state[move[1][1]][move[1][0]][2] = captured_piece
+    return board_state
+
+
+def king_finder(board_state, move_state):
+    for piece_position in piece_finder(board_state, move_state):
+        if piece_position[1] == ['K', move_state]:
+            return piece_position[0]
+
+
+def all_attacked_squares_finder(board_state, move_state):
+    if move_state == 'W':
+        pawn_direction = 1
+    if move_state == 'B':
+        pawn_direction = -1
+    attacked_squares = []
+    for move in all_moves_finder(board_state, move_state):
+        if type(move[1][1]) != int:
+            continue
+        elif board_state[move[0][1]][move[0][0]][2] == ['P', move_state] and move[1][0] == move[0][0]:
+            continue
+        else:
+            attacked_squares.append(move[1])
+    for piece in piece_finder(board_state, move_state):
+        if piece[1] == ['P', move_state]:
+            if piece[0][0] != 7:
+                attacked_squares.append([piece[0][0] + 1, piece[0][1] + pawn_direction])
+            if piece[0][0] != 0:
+                attacked_squares.append([piece[0][0] - 1, piece[0][1] + pawn_direction])
+    attacked_squares.sort()
+    return attacked_squares
+
+
+def white_kingside_castling_checker(board_state, game_history):
+    can_castle_kingside = False
+    blocked_castle = False
+    moved = False
+    if board_state[0][4][2] == ['K', 'W'] and board_state[0][7][2] == ['R', 'W']:
+        if board_state[0][5][2] == [0, 0] and board_state[0][6][2] == [0, 0]:
+            for attacked_square in all_attacked_squares_finder(board_state, 'B'):
+                if attacked_square == [4, 0] or attacked_square == [5, 0] or attacked_square == [6, 0]:
+                    blocked_castle = True
+                    break
+                else:
+                    continue
+            if not blocked_castle:
+                for played_move in game_history:
+                    if played_move[0] == [4, 0] or played_move[0] == [7, 0] or played_move[1] == [7,
+                                                                                                  0] or played_move == [
+                        'O-O', 'W'] or played_move[0] == ['O-O-O', 'W']:
+                        moved = True
+                        break
+                    else:
+                        continue
+                if not moved:
+                    can_castle_kingside = True
+    return can_castle_kingside
+
+
+def white_queenside_castling_checker(board_state, game_history):
+    can_castle_queenside = False
+    blocked_castle = False
+    moved = False
+    if board_state[0][4][2] == ['K', 'W'] and board_state[0][0][2] == ['R', 'W']:
+        if board_state[0][1][2] == [0, 0] and board_state[0][2][2] == [0, 0] and board_state[0][3][2] == [0, 0]:
+            for attacked_square in all_attacked_squares_finder(board_state, 'B'):
+                if attacked_square == [2, 0] or attacked_square == [3, 0] or attacked_square == [4, 0]:
+                    blocked_castle = True
+                    break
+                else:
+                    continue
+            if not blocked_castle:
+                for played_move in game_history:
+                    if played_move[0] == [4, 0] or played_move[0] == [0, 0] or played_move[1] == [0,
+                                                                                                  0] or played_move == [
+                        'O-O', 'W'] or played_move[0] == ['O-O-O', 'W']:
+                        moved = True
+                        break
+                    else:
+                        continue
+                if not moved:
+                    can_castle_queenside = True
+    return can_castle_queenside
+
+
+def black_kingside_castling_checker(board_state, game_history):
+    can_castle_kingside = False
+    blocked_castle = False
+    moved = False
+    if board_state[7][4][2] == ['K', 'B'] and board_state[7][7][2] == ['R', 'B']:
+        if board_state[7][5][2] == [0, 0] and board_state[7][6][2] == [0, 0]:
+            for attacked_square in all_attacked_squares_finder(board_state, 'W'):
+                if attacked_square == [4, 7] or attacked_square == [5, 7] or attacked_square == [6, 7]:
+                    blocked_castle = True
+                    break
+                else:
+                    continue
+            if not blocked_castle:
+                for played_move in game_history:
+                    if played_move[0] == [4, 7] or played_move[0] == [7, 7] or played_move[1] == [7,
+                                                                                                  7] or played_move == [
+                        'O-O', 'B'] or played_move[0] == ['O-O-O', 'B']:
+                        moved = True
+                        break
+                    else:
+                        continue
+                if not moved:
+                    can_castle_kingside = True
+    return can_castle_kingside
+
+
+def black_queenside_castling_checker(board_state, game_history):
+    can_castle_queenside = False
+    blocked_castle = False
+    moved = False
+    if board_state[7][4][2] == ['K', 'B'] and board_state[7][0][2] == ['R', 'B']:
+        if board_state[7][1][2] == [0, 0] and board_state[7][2][2] == [0, 0] and board_state[7][3][2] == [0, 0]:
+            for attacked_square in all_attacked_squares_finder(board_state, 'W'):
+                if attacked_square == [2, 7] or attacked_square == [3, 7] or attacked_square == [4, 7]:
+                    blocked_castle = True
+                    break
+                else:
+                    continue
+            if not blocked_castle:
+                for played_move in game_history:
+                    if played_move[0] == [4, 7] or played_move[0] == [0, 7] or played_move[1] == [0,
+                                                                                                  7] or played_move == [
+                        'O-O', 'B'] or played_move[0] == ['O-O-O', 'B']:
+                        moved = True
+                        break
+                    else:
+                        continue
+                if not moved:
+                    can_castle_queenside = True
+    return can_castle_queenside
+
+
+def all_legal_moves(board_state, move_state, game_history):
+    possible_legal_moves = []
+    if move_state == 'W':
+        opposing_move_state = 'B'
+        opposing_eighth_rank = 0
+        my_eighth_rank = 7
+        if white_kingside_castling_checker(board_state, game_history):
+            possible_legal_moves.append(['O-O', 'W'])
+        if white_queenside_castling_checker(board_state, game_history):
+            possible_legal_moves.append(['O-O-O', 'W'])
+    else:
+        opposing_move_state = 'W'
+        opposing_eighth_rank = 7
+        my_eighth_rank = 0
+        if black_kingside_castling_checker(board_state, game_history):
+            possible_legal_moves.append(['O-O', 'B'])
+        if black_queenside_castling_checker(board_state, game_history):
+            possible_legal_moves.append(['O-O-O', 'B'])
+    for my_move in all_moves_finder(board_state, move_state):
+        if type(my_move[1][1]) != int:
+            if board_state[my_eighth_rank][my_move[1][0]][2] != [0, 0]:
+                captured_piece = board_state[my_eighth_rank][my_move[1][0]][2]
+            else:
+                captured_piece = 0
+        elif board_state[my_move[1][1]][my_move[1][0]][2] != [0, 0]:
+            captured_piece = board_state[my_move[1][1]][my_move[1][0]][2]
+        else:
+            captured_piece = 0
+        illegal_move = False
+        next_position = position_creater(board_state, my_move)
+        my_move_reversed = [my_move[1], my_move[0]]
+        for opposing_move in all_moves_finder(next_position, opposing_move_state):
+            if type(opposing_move[1][1]) != int:
+                attacked_square = [opposing_move[1][0], opposing_eighth_rank]
+            else:
+                attacked_square = opposing_move[1]
+            king_position = king_finder(next_position, move_state)
+            if attacked_square == king_position:
+                illegal_move = True
+                break
+        if illegal_move == False:
+            possible_legal_moves.append(my_move)
+        if type(my_move[1][1]) != int:
+            board_state[my_move[0][1]][my_move[0][0]][2] = ['P', move_state]
+            board_state[my_eighth_rank][my_move[0][0]][2] = [0, 0]
+            if captured_piece != 0:
+                board_state[my_eighth_rank][my_move[1][0]][2] = captured_piece
+        else:
+            board_state = position_creater(board_state, my_move_reversed)
+            if captured_piece != 0:
+                board_state[my_move[1][1]][my_move[1][0]][2] = captured_piece
+    return possible_legal_moves
+
+
+def random_engine(moves, board_state, game_history, move_state):
+    return moves[random.randint(0, len(moves) - 1)]
+
+
+def min_opponent_moves_engine(moves, board_state, game_history, move_state):
+    moves_to_choose = []
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    if move_state == 'B':
+        opposing_move_state = 'W'
+    moves_per_move = []
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        number_of_opposing_moves = len(
+            all_legal_moves(position_creater(board_state, move), opposing_move_state, game_history))
+        board_state = move_reverser(board_state, move, captured_piece)
+        moves_per_move.append([move, number_of_opposing_moves])
+    current_least_replies = 100
+    for replies_per_move in moves_per_move:
+        if replies_per_move[1] < current_least_replies:
+            current_least_replies = replies_per_move[1]
+            moves_to_choose = []
+            moves_to_choose.append(replies_per_move[0])
+        elif replies_per_move[1] == current_least_replies:
+            moves_to_choose.append(replies_per_move[0])
+        else:
+            continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+
+def cccp_engine(moves, board_state, game_history, move_state):
+    good_move_found = False
+    moves_to_choose = []
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    if move_state == 'B':
+        opposing_move_state = 'W'
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        if game_ender(position_creater(board_state, move), move_state, game_history) == move_state:
+            moves_to_choose.append(move)
+            good_move_found = True
+        board_state = move_reverser(board_state, move, captured_piece)
+    if not good_move_found:
+        for move in moves:
+            captured_piece = captured_piece_finder(board_state, move_state, move)
+            board_state = position_creater(board_state, move)
+            for attacked_square in all_attacked_squares_finder(board_state, move_state):
+                if attacked_square == king_finder(board_state, opposing_move_state):
+                    moves_to_choose.append(move)
+                    good_move_found = True
+                    break
+            board_state = move_reverser(board_state, move, captured_piece)
+    if not good_move_found:
+        for move in moves:
+            captured_piece = captured_piece_finder(board_state, move_state, move)
+            if captured_piece != [0, 0]:
+                moves_to_choose.append(move)
+                good_move_found = True
+    if not good_move_found:
+        greatest_y_change = -8
+        for move in moves:
+            if move_state == 'W':
+                if move[0] == 'O-O' or move[0] == 'O-O-O':
+                    y_change = 0
+                elif type(move[1][1]) != int:
+                    y_change = 1
+                else:
+                    y_change = move[1][1] - move[0][1]
+                if y_change > greatest_y_change:
+                    greatest_y_change = y_change
+                    moves_to_choose = []
+                    moves_to_choose.append(move)
+                elif y_change == greatest_y_change:
+                    moves_to_choose.append(move)
+                else:
+                    continue
+            if move_state == 'B':
+                if move[0] == 'O-O' or move[0] == 'O-O-O':
+                    y_change = 0
+                elif type(move[1][1]) != int:
+                    y_change = 1
+                else:
+                    y_change = move[0][1] - move[1][1]
+                if y_change > greatest_y_change:
+                    greatest_y_change = y_change
+                    moves_to_choose = []
+                    moves_to_choose.append(move)
+                elif y_change == greatest_y_change:
+                    moves_to_choose.append(move)
+                else:
+                    continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+
+def ccp_engine(moves, board_state, game_history, move_state):
+    good_move_found = False
+    moves_to_choose = []
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    if move_state == 'B':
+        opposing_move_state = 'W'
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        if game_ender(position_creater(board_state, move), move_state, game_history) == move_state:
+            moves_to_choose.append(move)
+            good_move_found = True
+        board_state = move_reverser(board_state, move, captured_piece)
+    if not good_move_found:
+        for move in moves:
+            captured_piece = captured_piece_finder(board_state, move_state, move)
+            if captured_piece != [0, 0]:
+                moves_to_choose.append(move)
+                good_move_found = True
+    if not good_move_found:
+        greatest_y_change = -8
+        for move in moves:
+            if move_state == 'W':
+                if move[0] == 'O-O' or move[0] == 'O-O-O':
+                    y_change = 0
+                elif type(move[1][1]) != int:
+                    y_change = 1
+                else:
+                    y_change = move[1][1] - move[0][1]
+                if y_change > greatest_y_change:
+                    greatest_y_change = y_change
+                    moves_to_choose = []
+                    moves_to_choose.append(move)
+                elif y_change == greatest_y_change:
+                    moves_to_choose.append(move)
+                else:
+                    continue
+            if move_state == 'B':
+                if move[0] == 'O-O' or move[0] == 'O-O-O':
+                    y_change = 0
+                elif type(move[1][1]) != int:
+                    y_change = 1
+                else:
+                    y_change = move[0][1] - move[1][1]
+                if y_change > greatest_y_change:
+                    greatest_y_change = y_change
+                    moves_to_choose = []
+                    moves_to_choose.append(move)
+                elif y_change == greatest_y_change:
+                    moves_to_choose.append(move)
+                else:
+                    continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+
+def max_square_coverage_engine(moves, board_state, game_history, move_state):
+    moves_to_choose = []
+    best_coverage = 0
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        my_squares_attacked = all_attacked_squares_finder(board_state, move_state)
+        my_squares_covered = len(
+            list(my_squares_attacked for my_squares_attacked, _ in itertools.groupby(my_squares_attacked)))
+        board_state = move_reverser(board_state, move, captured_piece)
+        if my_squares_covered > best_coverage:
+            moves_to_choose = []
+            best_coverage = my_squares_covered
+            moves_to_choose.append(move)
+        elif my_squares_covered == best_coverage:
+            moves_to_choose.append(move)
+        else:
+            continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+
+def max_piece_activity_engine(moves, board_state, game_history, move_state):
+    moves_to_choose = []
+    best_coverage = 0
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        my_squares_covered = len(all_attacked_squares_finder(board_state, move_state))
+        board_state = move_reverser(board_state, move, captured_piece)
+        if my_squares_covered > best_coverage:
+            moves_to_choose = []
+            best_coverage = my_squares_covered
+            moves_to_choose.append(move)
+        elif my_squares_covered == best_coverage:
+            moves_to_choose.append(move)
+        else:
+            continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+
+def square_domination_engine(moves, board_state, game_history, move_state):
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    if move_state == 'B':
+        opposing_move_state = 'W'
+    moves_to_choose = []
+    best_square_domination = -64
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        my_controlled_squares = all_attacked_squares_finder(board_state, move_state)
+        opponents_controlled_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+        board_state = move_reverser(board_state, move, captured_piece)
+        my_control = len(
+            list(my_controlled_squares for my_controlled_squares, _ in itertools.groupby(my_controlled_squares)))
+        opponents_control = len(list(opponents_controlled_squares for opponents_controlled_squares, _ in
+                                     itertools.groupby(opponents_controlled_squares)))
+        square_domination = my_control - opponents_control
+        if square_domination > best_square_domination:
+            moves_to_choose = []
+            best_square_domination = square_domination
+            moves_to_choose.append(move)
+        elif square_domination == best_square_domination:
+            moves_to_choose.append(move)
+        else:
+            continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+
+def steamroller_engine(moves, board_state, game_history, move_state):
+    good_moves = []
+    best_y_change = 7
+    moves_to_choose = []
+    if move_state == 'W':
+        furthest_back = 7
+        for move in moves:
+            if move[1] == move_state:
+                moves_to_choose.append(move)
+                y_change = 0
+            elif type(move[1][1]) != int:
+                y_change = 1
+            else:
+                y_change = move[1][1] - move[0][1]
+            if 0 < y_change < best_y_change:
+                good_moves = []
+                good_moves.append(move)
+                best_y_change = y_change
+            elif y_change == best_y_change:
+                good_moves.append(move)
+            else:
+                continue
+        for good_move in good_moves:
+            if good_move[0][1] < furthest_back:
+                moves_to_choose = []
+                moves_to_choose.append(good_move)
+                furthest_back = good_move[0][1]
+            elif good_move[0][1] == furthest_back:
+                moves_to_choose.append(good_move)
+            else:
+                continue
+        if len(moves_to_choose) == 0:
+            moves_to_choose = [move2 for move2 in moves]
+    if move_state == 'B':
+        furthest_back = 0
+        for move in moves:
+            if move[1] == move_state:
+                moves_to_choose.append(move)
+                y_change = 0
+            elif type(move[1][1]) != int:
+                y_change = 1
+            else:
+                y_change = move[0][1] - move[1][1]
+            if 0 < y_change < best_y_change:
+                good_moves = []
+                good_moves.append(move)
+                best_y_change = y_change
+            elif y_change == best_y_change:
+                good_moves.append(move)
+            else:
+                continue
+        for good_move in good_moves:
+            if good_move[0][1] > furthest_back:
+                moves_to_choose = []
+                moves_to_choose.append(good_move)
+                furthest_back = good_move[0][1]
+            elif good_move[0][1] == furthest_back:
+                moves_to_choose.append(good_move)
+            else:
+                continue
+        if len(moves_to_choose) == 0:
+            moves_to_choose = [move2 for move2 in moves]
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+def principled_engine(moves, board_state, game_history, move_state):
+    if move_state == 'W':
+        opposing_move_state = 'B'
+        first_rank = 0
+    else:
+        opposing_move_state = 'W'
+        first_rank = 7
+    best_move_value = -999999
+    moves_to_choose = []
+    for move in moves:
+        open_file_control = 0
+        greatest_loss = 0
+        my_attacked_pieces = 0
+        my_centre_control = 0
+        opponent_material = 0
+        square_domination = 0
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        move_result = game_ender(board_state, opposing_move_state, [])
+        if move_result == 'D':
+            board_state = move_reverser(board_state, move, captured_piece)
+            continue
+        elif move_result == move_state:
+            board_state = move_reverser(board_state, move, captured_piece)
+            moves_to_choose = [move]
+            break
+        my_controlled_squares = all_attacked_squares_finder(board_state, move_state)
+        opponents_controlled_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+        my_control = len(list(my_controlled_squares for my_controlled_squares, _ in itertools.groupby(my_controlled_squares)))
+        opponents_control = len(list(opponents_controlled_squares for opponents_controlled_squares, _ in itertools.groupby(opponents_controlled_squares)))
+        square_domination = my_control - opponents_control
+        for my_piece in piece_finder(board_state, move_state):
+            if my_piece[0] == [3, 3] or my_piece[0] == [3, 4] or my_piece[0] == [4, 3] or my_piece[0] == [4, 4]:
+                my_centre_control += 10
+            elif my_piece[0] == [2, 2] or my_piece[0] == [2, 3] or my_piece[0] == [2, 4] or my_piece[0] == [2, 5] or my_piece[0] == [3, 5] or my_piece[0] == [4, 5] or my_piece[0] == [5, 5] or my_piece[0] == [5, 4] or my_piece[0] == [5, 3] or my_piece[0] == [5, 2] or my_piece[0] == [4, 2] or my_piece[0] == [3, 2]:
+                my_centre_control += 8
+            elif my_piece[0][1] == first_rank:
+                continue
+            else:
+                my_centre_control += 4
+            if my_piece[1][0] == 'R':
+                for i in range(8):
+                    if board_state[i][my_piece[0][0]] == ['P', move_state]:
+                        open_file_control -= 1
+            vulnerable_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+            if my_piece[0] in vulnerable_squares:
+                my_attacked_pieces += 1
+                if my_piece[1][0] == 'P' and greatest_loss < 1:
+                    greatest_loss = 1
+                elif my_piece[1][0] == 'N' and greatest_loss < 3:
+                    greatest_loss = 3
+                elif my_piece[1][0] == 'B' and greatest_loss < 3:
+                    greatest_loss = 3
+                elif my_piece[1][0] == 'R' and greatest_loss < 5:
+                    greatest_loss = 5
+                elif my_piece[1][0] == 'Q' and greatest_loss < 9:
+                    greatest_loss = 9
+                else:
+                    continue
+        for opposing_piece in piece_finder(board_state, opposing_move_state):
+            if opposing_piece[1][0] == 'P':
+                opponent_material += 1
+            elif opposing_piece[1][0] == 'N' or opposing_piece[1][0] == 'B':
+                opponent_material += 3
+            elif opposing_piece[1][0] == 'R':
+                opponent_material += 5
+            elif opposing_piece[1][0] == 'Q':
+                opponent_material += 9
+            else:
+                continue
+        try:
+            if move[1][1] == 'Q':
+                opponent_material -= 9
+        except IndexError:
+            pass
+        board_state = move_reverser(board_state, move, captured_piece)
+        move_value = (my_centre_control / 10) + (square_domination / 5) - greatest_loss - my_attacked_pieces - opponent_material + open_file_control
+        if move_value > best_move_value:
+            best_move_value = move_value
+            moves_to_choose = []
+            moves_to_choose.append(move)
+        elif move_value == best_move_value:
+            moves_to_choose.append(move)
+        else:
+            continue
+    try:
+        chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    except ValueError:
+        chosen_move = moves[random.randint(0, len(moves) - 1)]
+    return chosen_move
+
+def principled_engine_phased(moves, board_state, game_history, move_state):
+    if move_state == 'W':
+        opposing_move_state = 'B'
+        first_rank = 0
+        pawn_direction = 1
+    else:
+        opposing_move_state = 'W'
+        first_rank = 7
+        pawn_direction = -1
+    best_move_value = -999999
+    moves_to_choose = []
+    for move in moves:
+        queen_move = 0
+        attacked_opponent_pieces = 0
+        king_safety = 0
+        open_file_control = 0
+        greatest_loss = 0
+        my_attacked_pieces = 0
+        my_centre_control = 0
+        opponent_material = 0
+        square_domination = 0
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        move_result = game_ender(board_state, opposing_move_state, [])
+        if move_result == 'D':
+            board_state = move_reverser(board_state, move, captured_piece)
+            continue
+        elif move_result == move_state:
+            board_state = move_reverser(board_state, move, captured_piece)
+            moves_to_choose = [move]
+            break
+        my_controlled_squares = all_attacked_squares_finder(board_state, move_state)
+        opponents_controlled_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+        my_control = len(list(my_controlled_squares for my_controlled_squares, _ in itertools.groupby(my_controlled_squares)))
+        opponents_control = len(list(opponents_controlled_squares for opponents_controlled_squares, _ in itertools.groupby(opponents_controlled_squares)))
+        square_domination = my_control - opponents_control
+        my_pieces = piece_finder(board_state, move_state)
+        king_position = king_finder(board_state, move_state)
+        if king_position == [6, first_rank] or king_position == [2, first_rank] or king_position == [1, first_rank]:
+            king_safety += 6
+        if king_position == [7, first_rank] or [0, first_rank]:
+            king_safety += 8
+        try:
+            if board_state[king_position[1] + pawn_direction][king_position[0] - 1][2] == ['P', move_state] and king_safety > 2:
+                king_safety += 1
+        except IndexError:
+            pass
+        try:
+            if board_state[king_position[1] + pawn_direction][king_position[0]][2] == ['P', move_state] and king_safety > 2:
+                king_safety += 1
+        except IndexError:
+            pass
+        try:
+            if board_state[king_position[1] + pawn_direction][king_position[0] + 1][2] == ['P', move_state] and king_safety > 2:
+                king_safety += 1
+        except IndexError:
+            pass
+        try:
+            if board_state[move[1][1]][move[1][0]][2] == ['Q', move_state]:
+                queen_move = 1
+        except IndexError or TypeError:
+            pass
+        for my_piece in my_pieces:
+            if my_piece[1][0] == 'K':
+                continue
+            elif my_piece[0] == [3, 3] or my_piece[0] == [3, 4] or my_piece[0] == [4, 3] or my_piece[0] == [4, 4]:
+                my_centre_control += 12
+            elif my_piece[0] == [2, 2] or my_piece[0] == [2, 3] or my_piece[0] == [2, 4] or my_piece[0] == [2, 5] or my_piece[0] == [3, 5] or my_piece[0] == [4, 5] or my_piece[0] == [5, 5] or my_piece[0] == [5, 4] or my_piece[0] == [5, 3] or my_piece[0] == [5, 2] or my_piece[0] == [4, 2] or my_piece[0] == [3, 2]:
+                my_centre_control += 6
+            elif my_piece[0][1] == first_rank:
+                pass
+            elif my_piece[0][0] == 0 or my_piece[0][0] == 7:
+                my_centre_control -= 4
+            else:
+                my_centre_control += 4
+            if my_piece[1][0] == 'R':
+                for i in range(8):
+                    if board_state[i][my_piece[0][0]] == ['P', move_state]:
+                        open_file_control -= 1
+            vulnerable_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+            if my_piece[0] in vulnerable_squares:
+                if my_piece[1][0] == 'P' and greatest_loss < 1:
+                    greatest_loss = 1
+                    my_attacked_pieces += 2
+                elif my_piece[1][0] == 'N' and greatest_loss < 3:
+                    greatest_loss = 3
+                    my_attacked_pieces += 3
+                elif my_piece[1][0] == 'B' and greatest_loss < 3:
+                    greatest_loss = 3
+                    my_attacked_pieces += 3
+                elif my_piece[1][0] == 'R' and greatest_loss < 5:
+                    greatest_loss = 5
+                    my_attacked_pieces += 5
+                elif my_piece[1][0] == 'Q' and greatest_loss < 9:
+                    greatest_loss = 9
+                    my_attacked_pieces += 9
+                else:
+                    continue
+        opposing_pieces = piece_finder(board_state, opposing_move_state)
+        for opposing_piece in opposing_pieces:
+            if opposing_piece[1][0] == 'P':
+                opponent_material += 1
+            elif opposing_piece[1][0] == 'N' or opposing_piece[1][0] == 'B':
+                opponent_material += 3
+            elif opposing_piece[1][0] == 'R':
+                opponent_material += 5
+            elif opposing_piece[1][0] == 'Q':
+                opponent_material += 9
+            else:
+                continue
+            if opposing_piece[0] in my_controlled_squares:
+                attacked_opponent_pieces += 1
+        try:
+            if move[1][1] == 'Q':
+                opponent_material -= 9
+        except IndexError:
+            pass
+        board_state = move_reverser(board_state, move, captured_piece)
+        if len(my_pieces) + len(opposing_pieces) >= 25:
+            move_value = (my_centre_control / 8) + (square_domination / 10) - greatest_loss - (my_attacked_pieces / 5) - opponent_material + open_file_control + (king_safety / 8) + (attacked_opponent_pieces * 5 / len(opposing_pieces)) - (queen_move * 5 / (len(game_history) + 1))
+        elif len(my_pieces) + len(opposing_pieces) >= 15:
+            move_value = (my_centre_control / 10) + (square_domination / 5) - greatest_loss - (my_attacked_pieces / 4) - opponent_material + open_file_control + (king_safety / 8) + (attacked_opponent_pieces * 8 / len(opposing_pieces))
+        else:
+            move_value = (my_centre_control / 20) + (square_domination / 8) - greatest_loss - (my_attacked_pieces / 3) - opponent_material + (open_file_control / 3) + (king_safety * 0) + (attacked_opponent_pieces * 3 / len(opposing_pieces))
+        if move_value > best_move_value:
+            best_move_value = move_value
+            moves_to_choose = []
+            moves_to_choose.append(move)
+        elif move_value == best_move_value:
+            moves_to_choose.append(move)
+        else:
+            continue
+    #try:
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    #except ValueError:
+        #chosen_move = moves[random.randint(0, len(moves) - 1)]
+    return chosen_move
+
+def principled_engine_phased_imperfect(moves, board_state, game_history, move_state):
+    if move_state == 'W':
+        opposing_move_state = 'B'
+        first_rank = 0
+        pawn_direction = 1
+    else:
+        opposing_move_state = 'W'
+        first_rank = 7
+        pawn_direction = -1
+    best_move_value = -999999
+    moves_to_values = []
+    moves_to_choose = []
+    for move in moves:
+        queen_move = 0
+        attacked_opponent_pieces = 0
+        king_safety = 0
+        open_file_control = 0
+        greatest_loss = 0
+        my_attacked_pieces = 0
+        my_centre_control = 0
+        opponent_material = 0
+        square_domination = 0
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        move_result = game_ender(board_state, opposing_move_state, [])
+        if move_result == 'D':
+            board_state = move_reverser(board_state, move, captured_piece)
+            continue
+        elif move_result == move_state:
+            board_state = move_reverser(board_state, move, captured_piece)
+            moves_to_choose = [move]
+            break
+        my_controlled_squares = all_attacked_squares_finder(board_state, move_state)
+        opponents_controlled_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+        my_control = len(list(my_controlled_squares for my_controlled_squares, _ in itertools.groupby(my_controlled_squares)))
+        opponents_control = len(list(opponents_controlled_squares for opponents_controlled_squares, _ in itertools.groupby(opponents_controlled_squares)))
+        square_domination = my_control - opponents_control
+        my_pieces = piece_finder(board_state, move_state)
+        king_position = king_finder(board_state, move_state)
+        if king_position == [6, first_rank] or king_position == [2, first_rank] or king_position == [1, first_rank]:
+            king_safety += 6
+        if king_position == [7, first_rank] or [0, first_rank]:
+            king_safety += 8
+        try:
+            if board_state[king_position[1] + pawn_direction][king_position[0] - 1][2] == ['P', move_state] and king_safety > 2:
+                king_safety += 1
+        except IndexError:
+            pass
+        try:
+            if board_state[king_position[1] + pawn_direction][king_position[0]][2] == ['P', move_state] and king_safety > 2:
+                king_safety += 1
+        except IndexError:
+            pass
+        try:
+            if board_state[king_position[1] + pawn_direction][king_position[0] + 1][2] == ['P', move_state] and king_safety > 2:
+                king_safety += 1
+        except IndexError:
+            pass
+        try:
+            if board_state[move[1][1]][move[1][0]][2] == ['Q', move_state]:
+                queen_move = 1
+        except IndexError or TypeError:
+            pass
+        for my_piece in my_pieces:
+            if my_piece[1][0] == 'K':
+                continue
+            elif my_piece[0] == [3, 3] or my_piece[0] == [3, 4] or my_piece[0] == [4, 3] or my_piece[0] == [4, 4]:
+                my_centre_control += 12
+            elif my_piece[0] == [2, 2] or my_piece[0] == [2, 3] or my_piece[0] == [2, 4] or my_piece[0] == [2, 5] or my_piece[0] == [3, 5] or my_piece[0] == [4, 5] or my_piece[0] == [5, 5] or my_piece[0] == [5, 4] or my_piece[0] == [5, 3] or my_piece[0] == [5, 2] or my_piece[0] == [4, 2] or my_piece[0] == [3, 2]:
+                my_centre_control += 6
+            elif my_piece[0][1] == first_rank:
+                pass
+            elif my_piece[0][0] == 0 or my_piece[0][0] == 7:
+                my_centre_control -= 4
+            else:
+                my_centre_control += 4
+            if my_piece[1][0] == 'R':
+                for i in range(8):
+                    if board_state[i][my_piece[0][0]] == ['P', move_state]:
+                        open_file_control -= 1
+            vulnerable_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+            if my_piece[0] in vulnerable_squares:
+                if my_piece[1][0] == 'P' and greatest_loss < 1:
+                    greatest_loss = 1
+                    my_attacked_pieces += 1
+                elif my_piece[1][0] == 'N' and greatest_loss < 3:
+                    greatest_loss = 3
+                    my_attacked_pieces += 3
+                elif my_piece[1][0] == 'B' and greatest_loss < 3:
+                    greatest_loss = 3
+                    my_attacked_pieces += 3
+                elif my_piece[1][0] == 'R' and greatest_loss < 5:
+                    greatest_loss = 5
+                    my_attacked_pieces += 5
+                elif my_piece[1][0] == 'Q' and greatest_loss < 9:
+                    greatest_loss = 9
+                    my_attacked_pieces += 9
+                else:
+                    continue
+        opposing_pieces = piece_finder(board_state, opposing_move_state)
+        for opposing_piece in opposing_pieces:
+            if opposing_piece[1][0] == 'P':
+                opponent_material += 1
+            elif opposing_piece[1][0] == 'N' or opposing_piece[1][0] == 'B':
+                opponent_material += 3
+            elif opposing_piece[1][0] == 'R':
+                opponent_material += 5
+            elif opposing_piece[1][0] == 'Q':
+                opponent_material += 9
+            else:
+                continue
+            if opposing_piece[0] in my_controlled_squares:
+                attacked_opponent_pieces += 1
+        try:
+            if move[1][1] == 'Q':
+                opponent_material -= 9
+        except IndexError:
+            pass
+        board_state = move_reverser(board_state, move, captured_piece)
+        if len(my_pieces) + len(opposing_pieces) >= 25:
+            move_value = (my_centre_control / 8) + (square_domination / 10) - greatest_loss - (my_attacked_pieces / 5) - opponent_material + open_file_control + (king_safety / 8) + (attacked_opponent_pieces * 5 / len(opposing_pieces)) - (queen_move * 5 / (len(game_history) + 1))
+        elif len(my_pieces) + len(opposing_pieces) >= 15:
+            move_value = (my_centre_control / 10) + (square_domination / 5) - greatest_loss - (my_attacked_pieces / 4) - opponent_material + open_file_control + (king_safety / 8) + (attacked_opponent_pieces * 8 / len(opposing_pieces))
+        else:
+            move_value = (my_centre_control / 20) + (square_domination / 8) - greatest_loss - (my_attacked_pieces / 3) - opponent_material + (open_file_control / 3) + (king_safety * 0) + (attacked_opponent_pieces * 3 / len(opposing_pieces))
+        moves_to_values.append([move, move_value])
+    for [move, value] in moves_to_values:
+        if value > best_move_value:
+            best_move_value = value
+    for [move, value] in moves_to_values:
+        if value >= best_move_value - 0.3:
+            moves_to_choose.append(move)
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    #except ValueError:
+        #chosen_move = moves[random.randint(0, len(moves) - 1)]
+    return chosen_move
+
+def evaluator(board_state, game_history, move_state):
+    if move_state == 'W':
+        opposing_move_state = 'B'
+        first_rank = 0
+        eighth_rank = 7
+    else:
+        opposing_move_state = 'W'
+        first_rank = 7
+        eighth_rank = 0
+    result = game_ender(board_state, move_state, game_history)
+    if result == move_state:
+        evaluation = 999
+    elif result == opposing_move_state:
+        evaluation = -999
+    else:
+        my_material = 0
+        opposing_material = 0
+        my_centre_control = 0
+        opposing_centre_control = 0
+        for piece in piece_finder(board_state, move_state):
+            my_piece = piece[1][0]
+            if my_piece == 'P':
+                my_material += 1
+            elif my_piece == 'N':
+                my_material += 3
+            elif my_piece == 'B':
+                my_material += 3
+            elif my_piece == 'R':
+                my_material += 5
+            elif my_piece == 'Q':
+                my_material += 9
+            if piece[0] == [3, 3] or piece[0] == [4, 3] or piece[0] == [3, 4] or piece[0] == [4, 4]:
+                my_centre_control += 10
+            elif piece[0] == [2, 2] or piece[0] == [2, 3] or piece[0] == [2, 4] or piece[0] == [2, 5] or piece[0] == [3, 2] or piece[0] == [3, 5] or piece[0] == [4, 2] or piece[0] == [4, 5] or piece[0] == [5, 2] or piece[0] == [5, 3] or piece[0] == [5, 4] or piece[0] == [5, 5]:
+                my_centre_control += 5
+            elif piece[0][1] == first_rank:
+                pass
+            elif piece[0][0] == 0 or piece[0][0] == 7:
+                my_centre_control -= 3
+            else:
+                my_centre_control += 3
+        for piece in piece_finder(board_state, opposing_move_state):
+            opposing_piece = piece[1][0]
+            if opposing_piece == 'P':
+                opposing_material += 1
+            elif opposing_piece == 'N':
+                opposing_material += 3
+            elif opposing_piece == 'B':
+                opposing_material += 3
+            elif opposing_piece == 'R':
+                opposing_material += 5
+            elif opposing_piece == 'Q':
+                opposing_material += 9
+            if piece[0] == [3, 3] or piece[0] == [4, 3] or piece[0] == [3, 4] or piece[0] == [4, 4]:
+                opposing_centre_control += 10
+            elif piece[0] == [2, 2] or piece[0] == [2, 3] or piece[0] == [2, 4] or piece[0] == [2, 5] or piece[0] == [3, 2] or piece[0] == [3, 5] or piece[0] == [4, 2] or piece[0] == [4, 5] or piece[0] == [5, 2] or piece[0] == [5, 3] or piece[0] == [5, 4] or piece[0] == [5, 5]:
+                opposing_centre_control += 5
+            elif piece[0][1] == eighth_rank:
+                pass
+            elif piece[0][0] == 0 or piece[0][0] == 7:
+                opposing_centre_control -= 3
+            else:
+                opposing_centre_control += 3
+        my_controlled_squares = all_attacked_squares_finder(board_state, move_state)
+        opponents_controlled_squares = all_attacked_squares_finder(board_state, opposing_move_state)
+        my_control = len(list(my_controlled_squares for my_controlled_squares, _ in itertools.groupby(my_controlled_squares)))
+        opponents_control = len(list(opponents_controlled_squares for opponents_controlled_squares, _ in itertools.groupby(opponents_controlled_squares)))
+        evaluation = 10 * (my_material - opposing_material) + 1 * (my_centre_control - opposing_centre_control) + 1 * (my_control - opponents_control)
+    return evaluation
+
+def depth_engine(moves, board_state, game_history, move_state):
+    best_evaluation = 9999
+    evaluations = []
+    evaluations_1 = []
+    moves_to_choose = []
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    else:
+        opposing_move_state = 'W'
+    for move in moves:
+        captured_piece = captured_piece_finder(board_state, move_state, move)
+        board_state = position_creater(board_state, move)
+        for opposing_move in all_legal_moves(board_state, opposing_move_state, game_history):
+            captured_piece_1 = captured_piece_finder(board_state, opposing_move_state, opposing_move)
+            board_state = position_creater(board_state, opposing_move)
+            evaluations_1.append(evaluator(board_state, game_history, move_state))
+            board_state = move_reverser(board_state, opposing_move, captured_piece_1)
+        try:
+            evaluations.append(max(evaluations_1))
+        except ValueError:
+            if game_ender(board_state, move_state, game_history) == move_state:
+                evaluations.append(-999)
+            elif game_ender(board_state, move_state, game_history) == opposing_move_state:
+                evaluations.append(999)
+            else:
+                evaluations.append(0)
+        evaluations_1 = []
+        board_state = move_reverser(board_state, move, captured_piece)
+    move_evals = [[move, evaluation] for [move, evaluation] in zip(moves, evaluations)]
+    for move_eval in move_evals:
+        if move_eval[1] > best_evaluation:
+            best_evaluation = move_eval[1]
+            moves_to_choose = []
+            moves_to_choose.append(move_eval[0])
+        elif move_eval[1] == best_evaluation:
+            moves_to_choose.append(move_eval[0])
+        else:
+            continue
+    chosen_move = moves_to_choose[random.randint(0, len(moves_to_choose) - 1)]
+    return chosen_move
+
+def deep_engine(moves, board_state, game_history, move_state):
+    depth = 4
+    current_depth = 0
+    evaluation_tree = [[move] for move in moves]
+    while current_depth < depth:
+        for i in range(0, len(evaluation_tree) - 1):
+            for move in evaluation_tree[i]:
+                captured_piece = captured_piece_finder(board_state, move_state, move)
+                board_state = position_creater(board_state, move)
+
+def recursion_search(board_state_tree, remaining_depth, game_history, move_state):
+    evaluations = []
+    new_tree = []
+    if remaining_depth == 0:
+        for board_state in board_state_tree:
+            evaluations.append(evaluator(board_state, game_history, move_state))
+        return evaluations
+    else:
+        if move_state == 'W':
+            opposing_move_state = 'B'
+        else:
+            opposing_move_state = 'W'
+        if remaining_depth % 2 == 1:
+            for board_state in board_state_tree:
+                for move in all_legal_moves(board_state, move_state, game_history):
+                    captured_piece = captured_piece_finder(board_state, move_state, move)
+                    board_state = position_creater(board_state, move)
+                    new_board_state = copy.deepcopy(board_state)
+                    new_tree.append(new_board_state)
+                    board_state = move_reverser(board_state, move, captured_piece)
+        else:
+            for board_state in board_state_tree:
+                for move in all_legal_moves(board_state, opposing_move_state, game_history):
+                    captured_piece = captured_piece_finder(board_state, opposing_move_state, move)
+                    board_state = position_creater(board_state, move)
+                    new_board_state = copy.deepcopy(board_state)
+                    new_tree.append(new_board_state)
+                    board_state = move_reverser(board_state, move, captured_piece)
+        return recursion_search(new_tree, remaining_depth - 1, game_history, move_state)
+
+def depth_1_search(moves, board_state, game_history, move_state):
+    move_evals = []
+    for move in moves:
+        board_state_copy = copy.deepcopy(board_state)
+        board_state_copy = position_creater(board_state_copy, move)
+        move_evals.append([move, evaluator(board_state_copy, game_history, move_state)])
+    best_eval = max([evaluation[1] for evaluation in move_evals])
+    for move_eval in move_evals:
+        if best_eval == move_eval[1]:
+            chosen_move = move_eval[0]
+    return chosen_move
+
+def depth_2_search(moves, board_state, game_history, move_state):
+    move_evals = [[move] for move in moves]
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    else:
+        opposing_move_state = 'W'
+    for move in moves:
+        board_state_copy = copy.deepcopy(board_state)
+        board_state_copy = position_creater(board_state_copy, move)
+        for move1 in all_legal_moves(board_state_copy, opposing_move_state, game_history):
+            board_state_copy1 = copy.deepcopy(board_state_copy)
+            board_state_copy1 = position_creater(board_state_copy1, move1)
+            move_evals[moves.index(move)].append([evaluator(board_state_copy1, game_history, move_state)])
+    for move_eval in move_evals:
+        worst_eval = min(move_eval[1:])
+        del move_eval[1:]
+        move_eval.append(worst_eval)
+    best_eval = max([evaluation[1] for evaluation in move_evals])
+    print(move_evals)
+    for move_eval in move_evals:
+        if best_eval == move_eval[1]:
+            chosen_move = move_eval[0]
+    print(chosen_move)
+    return chosen_move
+
+def depth_3_search(moves, board_state, game_history, move_state):
+    move_evals = [[move] for move in moves]
+    evals1 = []
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    else:
+        opposing_move_state = 'W'
+    for move in moves:
+        board_state_copy = copy.deepcopy(board_state)
+        board_state_copy = position_creater(board_state_copy, move)
+        for move1 in all_legal_moves(board_state_copy, opposing_move_state, game_history):
+            evals1 = []
+            board_state_copy1 = copy.deepcopy(board_state_copy)
+            board_state_copy1 = position_creater(board_state_copy1, move1)
+            for move2 in all_legal_moves(board_state_copy1, move_state, game_history):
+                board_state_copy2 = copy.deepcopy(board_state_copy1)
+                board_state_copy2 = position_creater(board_state_copy2, move2)
+                evals1.append(evaluator(board_state_copy2, game_history, move_state))
+            best_eval1 = max(evals1)
+            move_evals[moves.index(move)].append([best_eval1])
+    for move_eval in move_evals:
+        worst_eval = min(move_eval[1:])
+        del move_eval[1:]
+        move_eval.append(worst_eval)
+    best_eval = max([evaluation[1] for evaluation in move_evals])
+    for move_eval in move_evals:
+        if best_eval == move_eval[1]:
+            chosen_move = move_eval[0]
+    return chosen_move
+
+
+def white_move_maker(board_state, game_history, engine):
+    whites_moves = all_legal_moves(board_state, 'W', game_history)
+    whites_move = engine(whites_moves, board_state, game_history, 'W')
+    game_history.append(whites_move)
+    new_board_state = position_creater(board_state, whites_move)
+    return [new_board_state, game_history]
+
+
+def black_move_maker(board_state, game_history, engine):
+    blacks_moves = all_legal_moves(board_state, 'B', game_history)
+    blacks_move = engine(blacks_moves, board_state, game_history, 'B')
+    game_history.append(blacks_move)
+    new_board_state = position_creater(board_state, blacks_move)
+    return [new_board_state, game_history]
+
+
+def game_ender(board_state, move_state, game_history):
+    game_result = 0
+    if move_state == 'W':
+        opposing_move_state = 'B'
+    else:
+        opposing_move_state = 'W'
+    if len(all_legal_moves(board_state, move_state, game_history)) == 0:
+        if king_finder(board_state, move_state) in all_attacked_squares_finder(board_state, opposing_move_state):
+            game_result = opposing_move_state
+        else:
+            game_result = 'D'
+    return game_result
+
+
+def algebraic_notation_generator(game_history):
+    algebraic_game_history = []
+    for move in game_history:
+        if move[0] == 'O-O' or move[0] == 'O-O-O':
+            algebraic_game_history.append(move[0])
+        elif type(move[1][1]) != int:
+            if move[0][1] == 1:
+                algebraic_game_history.append(
+                    empty_board[move[0][1]][move[0][0]][0] + ' ' + empty_board[0][move[1][0]][0] + ' = ' + move[1][1])
+            elif move[0][1] == 6:
+                algebraic_game_history.append(
+                    empty_board[move[0][1]][move[0][0]][0] + ' ' + empty_board[7][move[1][0]][0] + ' = ' + move[1][1])
+        else:
+            algebraic_game_history.append(
+                empty_board[move[0][1]][move[0][0]][0] + ' ' + empty_board[move[1][1]][move[1][0]][0])
+    return algebraic_game_history
+
+
+def computer_vs_computer(engine1, engine2):
+    rank_1 = [['a1', [0, 0], ['R', 'W']], ['b1', [1, 0], ['N', 'W']], ['c1', [2, 0], ['B', 'W']],
+              ['d1', [3, 0], ['Q', 'W']], ['e1', [4, 0], ['K', 'W']], ['f1', [5, 0], ['B', 'W']],
+              ['g1', [6, 0], ['N', 'W']], ['h1', [7, 0], ['R', 'W']]]
+    rank_2 = [['a2', [0, 1], ['P', 'W']], ['b2', [1, 1], ['P', 'W']], ['c2', [2, 1], ['P', 'W']],
+              ['d2', [3, 1], ['P', 'W']], ['e2', [4, 1], ['P', 'W']], ['f2', [5, 1], ['P', 'W']],
+              ['g2', [6, 1], ['P', 'W']], ['h2', [7, 1], ['P', 'W']]]
+    rank_3 = [['a3', [0, 2], [0, 0]], ['b3', [1, 2], [0, 0]], ['c3', [2, 2], [0, 0]], ['d3', [3, 2], [0, 0]],
+              ['e3', [4, 2], [0, 0]], ['f3', [5, 2], [0, 0]], ['g3', [6, 2], [0, 0]], ['h3', [7, 2], [0, 0]]]
+    rank_4 = [['a4', [0, 3], [0, 0]], ['b4', [1, 3], [0, 0]], ['c4', [2, 3], [0, 0]], ['d4', [3, 3], [0, 0]],
+              ['e4', [4, 3], [0, 0]], ['f4', [5, 3], [0, 0]], ['g4', [6, 3], [0, 0]], ['h4', [7, 3], [0, 0]]]
+    rank_5 = [['a5', [0, 4], [0, 0]], ['b5', [1, 4], [0, 0]], ['c5', [2, 4], [0, 0]], ['d5', [3, 4], [0, 0]],
+              ['e5', [4, 4], [0, 0]], ['f5', [5, 4], [0, 0]], ['g5', [6, 4], [0, 0]], ['h5', [7, 4], [0, 0]]]
+    rank_6 = [['a6', [0, 5], [0, 0]], ['b6', [1, 5], [0, 0]], ['c6', [2, 5], [0, 0]], ['d6', [3, 5], [0, 0]],
+              ['e6', [4, 5], [0, 0]], ['f6', [5, 5], [0, 0]], ['g6', [6, 5], [0, 0]], ['h6', [7, 5], [0, 0]]]
+    rank_7 = [['a7', [0, 6], ['P', 'B']], ['b7', [1, 6], ['P', 'B']], ['c7', [2, 6], ['P', 'B']],
+              ['d7', [3, 6], ['P', 'B']], ['e7', [4, 6], ['P', 'B']], ['f7', [5, 6], ['P', 'B']],
+              ['g7', [6, 6], ['P', 'B']], ['h7', [7, 6], ['P', 'B']]]
+    rank_8 = [['a8', [0, 7], ['R', 'B']], ['b8', [1, 7], ['N', 'B']], ['c8', [2, 7], ['B', 'B']],
+              ['d8', [3, 7], ['Q', 'B']], ['e8', [4, 7], ['K', 'B']], ['f8', [5, 7], ['B', 'B']],
+              ['g8', [6, 7], ['N', 'B']], ['h8', [7, 7], ['R', 'B']]]
+    board = [rank_1, rank_2, rank_3, rank_4, rank_5, rank_6, rank_7, rank_8]
+    board_state = board
+    game_history = []
+    while 0 == 0:
+        if len(game_history) >= 200:
+            print('D 200')
+            result = 'D'
+            break
+        if game_ender(board_state, 'W', game_history) != 0:
+            print(game_ender(board_state, 'W', game_history))
+            result = game_ender(board_state, 'W', game_history)
+            break
+        else:
+            whites_new_info = white_move_maker(board_state, game_history, engine1)
+            board_state = whites_new_info[0]
+            game_history = whites_new_info[1]
+        if game_ender(board_state, 'B', game_history) != 0:
+            print(game_ender(board_state, 'B', game_history))
+            result = game_ender(board_state, 'B', game_history)
+            break
+        else:
+            blacks_new_info = black_move_maker(board_state, game_history, engine2)
+            board_state = blacks_new_info[0]
+            game_history = blacks_new_info[1]
+    return [result, board_state, algebraic_notation_generator(game_history)]
+
+
+def human_vs_computer(engine):
+    rank_1 = [['a1', [0, 0], ['R', 'W']], ['b1', [1, 0], ['N', 'W']], ['c1', [2, 0], ['B', 'W']],
+              ['d1', [3, 0], ['Q', 'W']], ['e1', [4, 0], ['K', 'W']], ['f1', [5, 0], ['B', 'W']],
+              ['g1', [6, 0], ['N', 'W']], ['h1', [7, 0], ['R', 'W']]]
+    rank_2 = [['a2', [0, 1], ['P', 'W']], ['b2', [1, 1], ['P', 'W']], ['c2', [2, 1], ['P', 'W']],
+              ['d2', [3, 1], ['P', 'W']], ['e2', [4, 1], ['P', 'W']], ['f2', [5, 1], ['P', 'W']],
+              ['g2', [6, 1], ['P', 'W']], ['h2', [7, 1], ['P', 'W']]]
+    rank_3 = [['a3', [0, 2], [0, 0]], ['b3', [1, 2], [0, 0]], ['c3', [2, 2], [0, 0]], ['d3', [3, 2], [0, 0]],
+              ['e3', [4, 2], [0, 0]], ['f3', [5, 2], [0, 0]], ['g3', [6, 2], [0, 0]], ['h3', [7, 2], [0, 0]]]
+    rank_4 = [['a4', [0, 3], [0, 0]], ['b4', [1, 3], [0, 0]], ['c4', [2, 3], [0, 0]], ['d4', [3, 3], [0, 0]],
+              ['e4', [4, 3], [0, 0]], ['f4', [5, 3], [0, 0]], ['g4', [6, 3], [0, 0]], ['h4', [7, 3], [0, 0]]]
+    rank_5 = [['a5', [0, 4], [0, 0]], ['b5', [1, 4], [0, 0]], ['c5', [2, 4], [0, 0]], ['d5', [3, 4], [0, 0]],
+              ['e5', [4, 4], [0, 0]], ['f5', [5, 4], [0, 0]], ['g5', [6, 4], [0, 0]], ['h5', [7, 4], [0, 0]]]
+    rank_6 = [['a6', [0, 5], [0, 0]], ['b6', [1, 5], [0, 0]], ['c6', [2, 5], [0, 0]], ['d6', [3, 5], [0, 0]],
+              ['e6', [4, 5], [0, 0]], ['f6', [5, 5], [0, 0]], ['g6', [6, 5], [0, 0]], ['h6', [7, 5], [0, 0]]]
+    rank_7 = [['a7', [0, 6], ['P', 'B']], ['b7', [1, 6], ['P', 'B']], ['c7', [2, 6], ['P', 'B']],
+              ['d7', [3, 6], ['P', 'B']], ['e7', [4, 6], ['P', 'B']], ['f7', [5, 6], ['P', 'B']],
+              ['g7', [6, 6], ['P', 'B']], ['h7', [7, 6], ['P', 'B']]]
+    rank_8 = [['a8', [0, 7], ['R', 'B']], ['b8', [1, 7], ['N', 'B']], ['c8', [2, 7], ['B', 'B']],
+              ['d8', [3, 7], ['Q', 'B']], ['e8', [4, 7], ['K', 'B']], ['f8', [5, 7], ['B', 'B']],
+              ['g8', [6, 7], ['N', 'B']], ['h8', [7, 7], ['R', 'B']]]
+    board = [rank_1, rank_2, rank_3, rank_4, rank_5, rank_6, rank_7, rank_8]
+    board_state = board
+    game_history = []
+    while 0 == 0:
+        if len(game_history) >= 200:
+            print('D 200')
+            result = 'D'
+            break
+        if game_ender(board_state, 'W', game_history) != 0:
+            print(game_ender(board_state, 'W', game_history))
+            result = game_ender(board_state, 'W', game_history)
+            break
+        else:
+            illegally_moving = True
+            while illegally_moving:
+                human_move = input("Your Move: ")
+                legal_move = False
+                if human_move == 'Board State':
+                    print(board_state)
+                    print(algebraic_notation_generator((all_legal_moves(board_state, 'W', game_history))))
+                for move_info in zip(algebraic_notation_generator(all_legal_moves(board_state, 'W', game_history)),
+                                     all_legal_moves(board_state, 'W', game_history)):
+                    if human_move == move_info[0]:
+                        legal_move = True
+                        break
+                    else:
+                        continue
+                if legal_move:
+                    board_state = position_creater(board_state, move_info[1])
+                    game_history.append(move_info[1])
+                    illegally_moving = False
+                else:
+                    print("Illegal Move!")
+            if game_ender(board_state, 'B', game_history) != 0:
+                print(game_ender(board_state, 'B', game_history))
+                result = game_ender(board_state, 'B', game_history)
+                break
+            else:
+                blacks_new_info = black_move_maker(board_state, game_history, engine)
+                board_state = blacks_new_info[0]
+                game_history = blacks_new_info[1]
+                print(algebraic_notation_generator(game_history)[-1])
+    return [result, board_state, algebraic_notation_generator(game_history)]
+
+
+def computer_vs_human(engine):
+    rank_1 = [['a1', [0, 0], ['R', 'W']], ['b1', [1, 0], ['N', 'W']], ['c1', [2, 0], ['B', 'W']],
+              ['d1', [3, 0], ['Q', 'W']], ['e1', [4, 0], ['K', 'W']], ['f1', [5, 0], ['B', 'W']],
+              ['g1', [6, 0], ['N', 'W']], ['h1', [7, 0], ['R', 'W']]]
+    rank_2 = [['a2', [0, 1], ['P', 'W']], ['b2', [1, 1], ['P', 'W']], ['c2', [2, 1], ['P', 'W']],
+              ['d2', [3, 1], ['P', 'W']], ['e2', [4, 1], ['P', 'W']], ['f2', [5, 1], ['P', 'W']],
+              ['g2', [6, 1], ['P', 'W']], ['h2', [7, 1], ['P', 'W']]]
+    rank_3 = [['a3', [0, 2], [0, 0]], ['b3', [1, 2], [0, 0]], ['c3', [2, 2], [0, 0]], ['d3', [3, 2], [0, 0]],
+              ['e3', [4, 2], [0, 0]], ['f3', [5, 2], [0, 0]], ['g3', [6, 2], [0, 0]], ['h3', [7, 2], [0, 0]]]
+    rank_4 = [['a4', [0, 3], [0, 0]], ['b4', [1, 3], [0, 0]], ['c4', [2, 3], [0, 0]], ['d4', [3, 3], [0, 0]],
+              ['e4', [4, 3], [0, 0]], ['f4', [5, 3], [0, 0]], ['g4', [6, 3], [0, 0]], ['h4', [7, 3], [0, 0]]]
+    rank_5 = [['a5', [0, 4], [0, 0]], ['b5', [1, 4], [0, 0]], ['c5', [2, 4], [0, 0]], ['d5', [3, 4], [0, 0]],
+              ['e5', [4, 4], [0, 0]], ['f5', [5, 4], [0, 0]], ['g5', [6, 4], [0, 0]], ['h5', [7, 4], [0, 0]]]
+    rank_6 = [['a6', [0, 5], [0, 0]], ['b6', [1, 5], [0, 0]], ['c6', [2, 5], [0, 0]], ['d6', [3, 5], [0, 0]],
+              ['e6', [4, 5], [0, 0]], ['f6', [5, 5], [0, 0]], ['g6', [6, 5], [0, 0]], ['h6', [7, 5], [0, 0]]]
+    rank_7 = [['a7', [0, 6], ['P', 'B']], ['b7', [1, 6], ['P', 'B']], ['c7', [2, 6], ['P', 'B']],
+              ['d7', [3, 6], ['P', 'B']], ['e7', [4, 6], ['P', 'B']], ['f7', [5, 6], ['P', 'B']],
+              ['g7', [6, 6], ['P', 'B']], ['h7', [7, 6], ['P', 'B']]]
+    rank_8 = [['a8', [0, 7], ['R', 'B']], ['b8', [1, 7], ['N', 'B']], ['c8', [2, 7], ['B', 'B']],
+              ['d8', [3, 7], ['Q', 'B']], ['e8', [4, 7], ['K', 'B']], ['f8', [5, 7], ['B', 'B']],
+              ['g8', [6, 7], ['N', 'B']], ['h8', [7, 7], ['R', 'B']]]
+    board = [rank_1, rank_2, rank_3, rank_4, rank_5, rank_6, rank_7, rank_8]
+    board_state = board
+    game_history = []
+    while 0 == 0:
+        if len(game_history) >= 200:
+            print('D 200')
+            result = 'D'
+            break
+        if game_ender(board_state, 'W', game_history) != 0:
+            print(game_ender(board_state, 'W', game_history))
+            result = game_ender(board_state, 'W', game_history)
+            break
+        else:
+            try:
+                whites_new_info = white_move_maker(board_state, game_history, engine)
+            except TypeError:
+                print(board_state)
+            board_state = whites_new_info[0]
+            game_history = whites_new_info[1]
+            print(algebraic_notation_generator(game_history)[-1])
+        if game_ender(board_state, 'B', game_history) != 0:
+            print(game_ender(board_state, 'B', game_history))
+            result = game_ender(board_state, 'B', game_history)
+            break
+        else:
+            illegally_moving = True
+            while illegally_moving:
+                human_move = input("Your Move: ")
+                legal_move = False
+                if human_move == 'Board State':
+                    print(board_state)
+                    print(algebraic_notation_generator((all_legal_moves(board_state, 'W', game_history))))
+                for move_info in zip(algebraic_notation_generator(all_legal_moves(board_state, 'B', game_history)),
+                                     all_legal_moves(board_state, 'B', game_history)):
+                    if human_move == move_info[0]:
+                        legal_move = True
+                        break
+                    else:
+                        continue
+                if legal_move:
+                    board_state = position_creater(board_state, move_info[1])
+                    game_history.append(move_info[1])
+                    illegally_moving = False
+                else:
+                    print("Illegal Move!")
+    return [result, board_state, algebraic_notation_generator(game_history)]
+
+
+def decisive_game_finder(engine1, engine2):
+    result = 'D'
+    while result == 'D':
+        game_info = computer_vs_computer(engine1, engine2)
+        moves = game_info[2]
+        result = game_info[0]
+    return [result, moves]
+
+
+def tiebreaker(engine1, engine2):
+    result = 'D'
+    while result == 'D':
+        game1 = computer_vs_computer(engine1, engine2)
+        game2 = computer_vs_computer(engine2, engine1)
+        if game1[0] == game2[0]:
+            result = 'D'
+        elif game1[0] != 'D':
+            result = game1[0]
+        else:
+            result = game2[0]
+    return result
+
+
+def computer_match_generator(games_limit, engine1, engine2):
+    games = 0
+    draws = 0
+    white_wins = 0
+    black_wins = 0
+    while games < games_limit:
+        game = computer_vs_computer(engine1, engine2)
+        game_result = game[0]
+        print(game)
+        if game_result == 'W':
+            white_wins += 1
+            games += 1
+        elif game_result == 'B':
+            black_wins += 1
+            games += 1
+        else:
+            draws += 1
+            games += 1
+    return [white_wins, black_wins, draws]
+
+
+def swiss_tournament_director(games_per_match):
+    competitors = {random_engine: 0, min_opponent_moves_engine: 0, cccp_engine: 0, ccp_engine: 0,
+                   principled_engine: 0, max_piece_activity_engine: 0, square_domination_engine: 0,
+                   steamroller_engine: 0}
+    for engine1 in competitors.keys():
+        for engine2 in competitors.keys():
+            if engine1 == engine2:
+                continue
+            engine1_results = computer_match_generator(games_per_match / 2, engine1, engine2)
+            engine2_results = [engine1_results[2], engine1_results[1], engine1_results[0]]
+            competitors[engine1] += engine1_results[0]
+            competitors[engine1] += engine1_results[1] * 0.5
+            competitors[engine2] += engine2_results[0]
+            competitors[engine2] += engine2_results[1] * 0.5
+    scores = [[score, competitor.__name__] for [score, competitor] in zip(competitors.values(), competitors.keys())]
+    scores.sort(reverse=True)
+    return scores
+
+
+def knockout_tournament_director(games_per_match):
+    competitors = [random_engine, min_opponent_moves_engine, principled_engine, ccp_engine, max_square_coverage_engine,
+                   principled_engine_phased, square_domination_engine, steamroller_engine]
+    round_one_pairings = []
+    semifinalists = []
+    semifinals_pairings = []
+    finalists = []
+    while len(competitors) > 1:
+        engine1 = competitors.pop(random.randint(0, len(competitors) - 1))
+        engine2 = competitors.pop(random.randint(0, len(competitors) - 1))
+        round_one_pairings.append([engine1, engine2])
+    print("Round One Pairings: " + str(
+        [[engine1.__name__, engine2.__name__] for [engine1, engine2] in round_one_pairings]))
+    # input()
+    for match in round_one_pairings:
+        results1 = computer_match_generator(games_per_match / 2, match[0], match[1])
+        results2 = computer_match_generator(games_per_match / 2, match[1], match[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            tiebreaks = tiebreaker(match[0], match[1])
+            if tiebreaks == 'W':
+                semifinalists.append(match[0])
+            if tiebreaks == 'B':
+                semifinalists.append(match[1])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            semifinalists.append(match[0])
+        else:
+            semifinalists.append(match[1])
+    while len(semifinalists) > 1:
+        engine1 = semifinalists.pop(random.randint(0, len(semifinalists) - 1))
+        engine2 = semifinalists.pop(random.randint(0, len(semifinalists) - 1))
+        semifinals_pairings.append([engine1, engine2])
+    print("Semifinals Pairings: " + str(
+        [[engine1.__name__, engine2.__name__] for [engine1, engine2] in semifinals_pairings]))
+    # input()
+    for match in semifinals_pairings:
+        results1 = computer_match_generator(games_per_match / 2, match[0], match[1])
+        results2 = computer_match_generator(games_per_match / 2, match[1], match[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            tiebreaks = tiebreaker(match[0], match[1])
+            if tiebreaks == 'W':
+                finalists.append(match[0])
+            if tiebreaks == 'B':
+                finalists.append(match[1])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            finalists.append(match[0])
+        else:
+            finalists.append(match[1])
+    print("Finals Pairing: " + str([finalists[0].__name__, finalists[1].__name__]))
+    # input()
+    results1 = computer_match_generator(games_per_match / 2, finalists[0], finalists[1])
+    results2 = computer_match_generator(games_per_match / 2, finalists[1], finalists[0])
+    if results1[0] + results2[1] == results1[1] + results2[0]:
+        tiebreaks = tiebreaker(finalists[0], finalists[1])
+        if tiebreaks == 'W':
+            winner = finalists[0].__name__
+        if tiebreaks == 'B':
+            winner = finalists[1].__name__
+    elif results1[0] + results2[1] > results1[1] + results2[0]:
+        winner = finalists[0].__name__
+    else:
+        winner = finalists[1].__name__
+    return winner
+
+
+def double_elimination_tournament(games_per_match):
+    competitors = [random_engine, min_opponent_moves_engine, cccp_engine, ccp_engine, max_square_coverage_engine,
+                   max_piece_activity_engine, square_domination_engine, steamroller_engine]
+    winners_bracket = competitors
+    losers_bracket = []
+    winners_bracket_pairings = []
+    losers_bracket_pairings = []
+    while len(winners_bracket) > 1:
+        engine1 = winners_bracket.pop(random.randint(0, len(winners_bracket) - 1))
+        engine2 = winners_bracket.pop(random.randint(0, len(winners_bracket) - 1))
+        winners_bracket_pairings.append([engine1, engine2])
+    print("Round One Pairings: " + str([[engine1.__name__, engine2.__name__] for [engine1, engine2] in winners_bracket_pairings]))
+    winners_bracket = []
+    for pairing in winners_bracket_pairings:
+        results1 = computer_match_generator(games_per_match / 2, pairing[0], pairing[1])
+        results2 = computer_match_generator(games_per_match / 2, pairing[1], pairing[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            if tiebreaker(pairing[0], pairing[1]) == 'W':
+                winners_bracket.append(pairing[0])
+                losers_bracket.append(pairing[1])
+            else:
+                winners_bracket.append(pairing[1])
+                losers_bracket.append(pairing[0])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            winners_bracket.append(pairing[0])
+            losers_bracket.append(pairing[1])
+        else:
+            winners_bracket.append(pairing[1])
+            losers_bracket.append(pairing[0])
+    winners_bracket_pairings = []
+    while len(winners_bracket) > 1:
+        engine1 = winners_bracket.pop(random.randint(0, len(winners_bracket) - 1))
+        engine2 = winners_bracket.pop(random.randint(0, len(winners_bracket) - 1))
+        winners_bracket_pairings.append([engine1, engine2])
+    while len(losers_bracket) > 1:
+        engine1 = losers_bracket.pop(random.randint(0, len(losers_bracket) - 1))
+        engine2 = losers_bracket.pop(random.randint(0, len(losers_bracket) - 1))
+        losers_bracket_pairings.append([engine1, engine2])
+    print("Winners Bracket Pairings: " + str([[engine1.__name__, engine2.__name__] for [engine1, engine2] in winners_bracket_pairings]))
+    print("Losers Bracket Pairings: " + str([[engine1.__name__, engine2.__name__] for [engine1, engine2] in losers_bracket_pairings]))
+    winners_bracket = []
+    losers_bracket = []
+    for pairing in winners_bracket_pairings:
+        results1 = computer_match_generator(games_per_match / 2, pairing[0], pairing[1])
+        results2 = computer_match_generator(games_per_match / 2, pairing[1], pairing[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            if tiebreaker(pairing[0], pairing[1]) == 'W':
+                winners_bracket.append(pairing[0])
+                losers_bracket.append(pairing[1])
+            else:
+                winners_bracket.append(pairing[1])
+                losers_bracket.append(pairing[0])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            winners_bracket.append(pairing[0])
+            losers_bracket.append(pairing[1])
+        else:
+            winners_bracket.append(pairing[1])
+            losers_bracket.append(pairing[0])
+    for pairing in losers_bracket_pairings:
+        results1 = computer_match_generator(games_per_match / 2, pairing[0], pairing[1])
+        results2 = computer_match_generator(games_per_match / 2, pairing[1], pairing[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            if tiebreaker(pairing[0], pairing[1]) == 'W':
+                losers_bracket.append(pairing[0])
+            else:
+                losers_bracket.append(pairing[1])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            losers_bracket.append(pairing[0])
+        else:
+            losers_bracket.append(pairing[1])
+    winners_bracket_pairings = []
+    losers_bracket_pairings = []
+    while len(winners_bracket) > 1:
+        engine1 = winners_bracket.pop(random.randint(0, len(winners_bracket) - 1))
+        engine2 = winners_bracket.pop(random.randint(0, len(winners_bracket) - 1))
+        winners_bracket_pairings.append([engine1, engine2])
+    while len(losers_bracket) > 1:
+        engine1 = losers_bracket.pop(random.randint(0, len(losers_bracket) - 1))
+        engine2 = losers_bracket.pop(random.randint(0, len(losers_bracket) - 1))
+        losers_bracket_pairings.append([engine1, engine2])
+    print("Winners Bracket Pairing: " + str([[engine1.__name__, engine2.__name__] for [engine1, engine2] in winners_bracket_pairings]))
+    print("Losers Bracket Pairings: " + str([[engine1.__name__, engine2.__name__] for [engine1, engine2] in losers_bracket_pairings]))
+    winners_bracket = []
+    losers_bracket = []
+    for pairing in winners_bracket_pairings:
+        results1 = computer_match_generator(games_per_match / 2, pairing[0], pairing[1])
+        results2 = computer_match_generator(games_per_match / 2, pairing[1], pairing[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            if tiebreaker(pairing[0], pairing[1]) == 'W':
+                winners_bracket.append(pairing[0])
+                losers_bracket.append(pairing[1])
+            else:
+                winners_bracket.append(pairing[1])
+                losers_bracket.append(pairing[0])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            winners_bracket.append(pairing[0])
+            losers_bracket.append(pairing[1])
+        else:
+            winners_bracket.append(pairing[1])
+            losers_bracket.append(pairing[0])
+    for pairing in losers_bracket_pairings:
+        results1 = computer_match_generator(games_per_match / 2, pairing[0], pairing[1])
+        results2 = computer_match_generator(games_per_match / 2, pairing[1], pairing[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            if tiebreaker(pairing[0], pairing[1]) == 'W':
+                losers_bracket.append(pairing[0])
+            else:
+                losers_bracket.append(pairing[1])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            losers_bracket.append(pairing[0])
+        else:
+            losers_bracket.append(pairing[1])
+    winners_bracket_pairings = []
+    losers_bracket_pairings = []
+    while len(losers_bracket) > 1:
+        engine1 = losers_bracket.pop(random.randint(0, len(losers_bracket) - 1))
+        engine2 = losers_bracket.pop(random.randint(0, len(losers_bracket) - 1))
+        losers_bracket_pairings.append([engine1, engine2])
+    print("Losers Bracket Pairings: " + str([[engine1.__name__, engine2.__name__] for [engine1, engine2] in losers_bracket_pairings]))
+    losers_bracket = []
+    for pairing in losers_bracket_pairings:
+        results1 = computer_match_generator(games_per_match / 2, pairing[0], pairing[1])
+        results2 = computer_match_generator(games_per_match / 2, pairing[1], pairing[0])
+        if results1[0] + results2[1] == results1[1] + results2[0]:
+            if tiebreaker(pairing[0], pairing[1]) == 'W':
+                losers_bracket.append(pairing[0])
+            else:
+                losers_bracket.append(pairing[1])
+        elif results1[0] + results2[1] > results1[1] + results2[0]:
+            losers_bracket.append(pairing[0])
+        else:
+            losers_bracket.append(pairing[1])
+    print("Finals Pairing: " + str([winners_bracket[0].__name__, losers_bracket[0].__name__]))
+    results1 = computer_match_generator(games_per_match / 2, winners_bracket[0], losers_bracket[0])
+    results2 = computer_match_generator(games_per_match / 2, winners_bracket[0], losers_bracket[0])
+    if results1[0] + results2[1] == results1[1] + results2[0]:
+        if tiebreaker(winners_bracket[0], losers_bracket[0]) == 'W':
+            champion = winners_bracket[0].__name__
+        else:
+            champion = losers_bracket[0].__name__
+    elif results1[0] + results2[1] > results1[1] + results2[0]:
+        champion = winners_bracket[0].__name__
+    else:
+        champion = losers_bracket[0].__name__
+    return champion
+
+#print(swiss_tournament_director(20))
+# print(knockout_tournament_director(2))
+#print(computer_vs_computer(principled_engine_phased, random_engine))
+#print(computer_match_generator(20, principled_engine_phased, principled_engine_phased))
+# print(decisive_game_finder())
+#print(human_vs_computer(principled_engine_phased))
+#print(computer_vs_human(depth_2_search))
+# print(tournament_director(1))
+print(double_elimination_tournament(2))
+#print(principled_engine_phased(all_legal_moves(empty_board, 'W', []), empty_board, 'W', []))
+#print(deepest_tree_evaluator([['a1 b1', [['b2 b4', [['c7 c5'], ['a6 b4']]], ['b7 b8', [['a1 a5'], ['c2 c4'], ['h5 h4']]]]], ['b7 b3', ['a1 h8', ['h8 a1']]]]))
+#print(recursion_search([bboard], 3, [], 'W'))
+#print(depth_3_search(all_legal_moves(empty_board, 'W', []), empty_board, [], 'W'))
+#print(evaluator(bboard, [], 'W'))
