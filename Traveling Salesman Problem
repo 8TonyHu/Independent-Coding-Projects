@@ -1,0 +1,392 @@
+import random
+
+def city_generator(number, x_dimension, y_dimension):
+    cities = []
+    for i in range(number):
+        cities.append([random.randrange(x_dimension), random.randrange(y_dimension)])
+    return cities
+cities = city_generator(15, 100, 100)
+# Generates 15 cities in a 100x100 grid
+
+def distance_calculator(origin, destination):
+    return ((origin[0] - destination[0]) ** 2 + (origin[1] - destination[1]) ** 2) ** 0.5
+# Finds the distance using Pythagorean Theorem
+
+def distance_lister(origin, destinations):
+    distance_list = []
+    for destination in destinations:
+        distance_list.append(distance_calculator(origin, destination))
+    return distance_list
+# Lists the distances between the origin city and all possible destinations. Useful for NN, FN, and depth algorithms
+
+def random_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    # Example of the random function; generates a random integer in the specified range
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 0:
+        destination = cities[random.randrange(len(cities))]
+        distance_traveled += distance_calculator(location, destination)
+        location = destination
+        route.append(location)
+        cities.remove(destination)
+    return [distance_traveled, route]
+
+def nearest_neighbour_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 0:
+        shortest_distance = 9999
+        # This value is initially set to 9999 to ensure a destination will be found with a shorter distance
+        distance_list = distance_lister(location, cities)
+        for i in range(len(cities)):
+            if distance_list[i] < shortest_distance:
+                closest_city = i
+                shortest_distance = distance_list[i]
+        distance_traveled += shortest_distance
+        location = cities[closest_city]
+        route.append(location)
+        cities.pop(closest_city)
+    return [distance_traveled, route]
+
+def furthest_neighbour_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 0:
+        furthest_distance = 0
+        # This value is initially set to 0 to ensure a destination will be found with a further distance
+        distance_list = distance_lister(location, cities)
+        for i in range(len(cities)):
+            if distance_list[i] > furthest_distance:
+                furthest_city = i
+                furthest_distance = distance_list[i]
+        distance_traveled += furthest_distance
+        location = cities[furthest_city]
+        route.append(location)
+        cities.pop(furthest_city)
+    return [distance_traveled, route]
+
+def plus_x_algorithm(cities):
+    cities = sorted(cities)
+    # Sorts cities by x coordinate
+    distance_traveled = 0
+    current_city = cities[0]
+    route = [current_city]
+    cities.remove(current_city)
+    while len(cities) != 0:
+        distance_traveled += distance_calculator(current_city, cities[0])
+        current_city = cities[0]
+        route.append(current_city)
+        cities.pop(0)
+    return [distance_traveled, route]
+
+def d1_search(current_city, cities):
+    shortest_distance = 9999
+    distance_list = distance_lister(current_city, cities)
+    for i in range(len(cities)):
+        if distance_list[i] < shortest_distance:
+            best_move = i
+            shortest_distance = distance_list[i]
+    return [cities[best_move], shortest_distance]
+# This is not the actual d1 algorithm
+
+def d2_search(current_city, cities):
+    shortest_distance = 9999
+    distance_list = distance_lister(current_city, cities)
+    for i in range(len(cities)):
+        distance_traveled = distance_list[i]
+        cities2 = cities[:]
+        cities2.pop(i)
+        distance_traveled += d1_search(cities[i], cities2)[1]
+        # For depth >1, the algorithm simulates one step and uses the search algorithm of the previous depth
+        if distance_traveled < shortest_distance:
+            best_move = i
+            shortest_distance = distance_traveled
+    return [cities[best_move], shortest_distance]
+
+def d3_search(current_city, cities):
+    shortest_distance = 9999
+    distance_list = distance_lister(current_city, cities)
+    for i in range(len(cities)):
+        distance_traveled = distance_list[i]
+        cities2 = cities[:]
+        cities2.pop(i)
+        distance_traveled += d2_search(cities[i], cities2)[1]
+        if distance_traveled < shortest_distance:
+            best_move = i
+            shortest_distance = distance_traveled
+    return [cities[best_move], shortest_distance]
+
+def d4_search(current_city, cities):
+    shortest_distance = 9999
+    distance_list = distance_lister(current_city, cities)
+    for i in range(len(cities)):
+        distance_traveled = distance_list[i]
+        cities2 = cities[:]
+        cities2.pop(i)
+        distance_traveled += d3_search(cities[i], cities2)[1]
+        if distance_traveled < shortest_distance:
+            best_move = i
+            shortest_distance = distance_traveled
+    return [cities[best_move], shortest_distance]
+
+def d5_search(current_city, cities):
+    shortest_distance = 9999
+    distance_list = distance_lister(current_city, cities)
+    for i in range(len(cities)):
+        distance_traveled = distance_list[i]
+        cities2 = cities[:]
+        cities2.pop(i)
+        distance_traveled += d4_search(cities[i], cities2)[1]
+        if distance_traveled < shortest_distance:
+            best_move = i
+            shortest_distance = distance_traveled
+    return [cities[best_move], shortest_distance]
+
+def d6_search(current_city, cities):
+    shortest_distance = 9999
+    distance_list = distance_lister(current_city, cities)
+    for i in range(len(cities)):
+        distance_traveled = distance_list[i]
+        cities2 = cities[:]
+        cities2.pop(i)
+        distance_traveled += d5_search(cities[i], cities2)[1]
+        if distance_traveled < shortest_distance:
+            best_move = i
+            shortest_distance = distance_traveled
+    return [cities[best_move], shortest_distance]
+
+def d1_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 0:
+        # Iterates the d1 search
+        next_move = d1_search(location, cities)[0]
+        distance_traveled += distance_calculator(location, next_move)
+        location = next_move
+        cities.remove(next_move)
+        route.append(next_move)
+    return [distance_traveled, route]
+
+def d2_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 1:
+        # Iterates the d2 search
+        next_move = d2_search(location, cities)[0]
+        distance_traveled += distance_calculator(location, next_move)
+        location = next_move
+        cities.remove(next_move)
+        route.append(next_move)
+    # When fewer than 2 cities remain, the algorithm switches to d1 search
+    next_move = d1_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    return [distance_traveled, route]
+
+def d3_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 2:
+        next_move = d3_search(location, cities)[0]
+        distance_traveled += distance_calculator(location, next_move)
+        location = next_move
+        cities.remove(next_move)
+        route.append(next_move)
+    # Again, when fewer than 3 cities remain, the algorithm switches to d2, then d1 search
+    next_move = d2_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d1_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    return [distance_traveled, route]
+
+def d4_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 3:
+        next_move = d4_search(location, cities)[0]
+        distance_traveled += distance_calculator(location, next_move)
+        location = next_move
+        cities.remove(next_move)
+        route.append(next_move)
+    next_move = d3_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d2_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d1_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    return [distance_traveled, route]
+
+def d5_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 4:
+        next_move = d5_search(location, cities)[0]
+        distance_traveled += distance_calculator(location, next_move)
+        location = next_move
+        cities.remove(next_move)
+        route.append(next_move)
+    next_move = d4_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d3_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d2_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d1_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    return [distance_traveled, route]
+
+def d6_algorithm(cities):
+    distance_traveled = 0
+    location = cities[random.randrange(len(cities))]
+    route = [location]
+    cities.remove(location)
+    while len(cities) != 5:
+        next_move = d6_search(location, cities)[0]
+        distance_traveled += distance_calculator(location, next_move)
+        location = next_move
+        cities.remove(next_move)
+        route.append(next_move)
+    next_move = d5_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d4_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d3_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d2_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    next_move = d1_search(location, cities)[0]
+    distance_traveled += distance_calculator(location, next_move)
+    location = next_move
+    cities.remove(next_move)
+    route.append(next_move)
+    return [distance_traveled, route]
+cities = [[5, 5], [4, 5], [7, 5], [8, 5]]
+cities1 = cities[:]
+cities2 = cities[:]
+cities3 = cities[:]
+cities4 = cities[:]
+cities5 = cities[:]
+cities6 = cities[:]
+cities7 = cities[:]
+cities8 = cities[:]
+cities9 = cities[:]
+cities10 = cities[:]
+cities11 = cities[:]
+cities12 = cities[:]
+# By using [:], a new object is created. The original object (cities) can now be manipulated without changing the value of the other objects
+
+def tournament_director(trials):
+    d1_score = 0
+    d2_score = 0
+    d3_score = 0
+    d4_score = 0
+    d5_score = 0
+    d6_score = 0
+    nn_score = 0
+    fn_score = 0
+    od_score = 0
+    rd_score = 0
+    for i in range(trials):
+        cities = city_generator(20, 100, 100)
+        # The arguments can be changed to alter the parameters of the tournament
+        cities1 = cities[:]
+        cities2 = cities[:]
+        cities3 = cities[:]
+        cities4 = cities[:]
+        cities5 = cities[:]
+        cities6 = cities[:]
+        cities7 = cities[:]
+        cities8 = cities[:]
+        cities9 = cities[:]
+        cities10 = cities[:]
+        d1_score += d1_algorithm(cities1)[0]
+        d2_score += d2_algorithm(cities2)[0]
+        d3_score += d3_algorithm(cities3)[0]
+        d4_score += d4_algorithm(cities4)[0]
+        d5_score += d5_algorithm(cities9)[0]
+        d6_score += d6_algorithm(cities10)[0]
+        nn_score += nearest_neighbour_algorithm(cities5)[0]
+        fn_score += furthest_neighbour_algorithm(cities6)[0]
+        od_score += plus_x_algorithm(cities7)[0]
+        rd_score += random_algorithm(cities8)[0]
+    print("d1: " + str(d1_score / trials))
+    print("d2: " + str(d2_score / trials))
+    print("d3: " + str(d3_score / trials))
+    print("d4: " + str(d4_score / trials))
+    print("d5: " + str(d5_score / trials))
+    print("d6: " + str(d6_score / trials))
+    print("nn: " + str(nn_score / trials))
+    print("fn: " + str(fn_score / trials))
+    print("od: " + str(od_score / trials))
+    print("rd: " + str(rd_score / trials))
+    # This function prints the average distance traveled for each algorithm
+
+# The following lines were used for testing purposes:
+print(random_algorithm(cities1))
+#print(nearest_neighbour_algorithm(cities2))
+#print(furthest_neighbour_algorithm(cities3))
+#print(plus_x_algorithm(cities4))
+#print(d1_algorithm(cities5))
+#print(d2_algorithm(cities6))
+#print(d3_algorithm(cities7))
+#print(d4_algorithm(cities8))
+#print(d5_algorithm(cities9))
+#print(d6_algorithm(cities10))
+#print(tournament_director(20))
