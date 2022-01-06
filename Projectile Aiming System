@@ -1,0 +1,56 @@
+import math
+
+#User inputted parameters:
+target = [float(input("Target x-coordinate: ")), float(input("Target y-coordinate: "))]
+target_velocity = [float(input("Target x-velocity: ")), float(input("Target y-velocity: "))]
+v_m = float(input("Muzzle Velocity: "))
+r = float(input("Desired Accuracy: "))
+
+#Constants or parameters calculated by the machine:
+g = 9.81
+try:
+    increment = v_m ** 2 / (10 * (target_velocity[0] ** 2 + target_velocity[1] ** 2) ** 0.5 * g)
+except ZeroDivisionError:
+    pass
+hone_in = False
+aim = target[:]
+
+while 0 == 0:
+    #Calculating the trajectory
+    theta_h = math.atan(aim[1] / aim[0])
+    d_x = (aim[0]**2 + aim[1]**2)**0.5
+    try:
+        theta_e = math.asin(d_x * g / (v_m ** 2)) / 2
+    except ValueError:
+        print("Impossible to hit")
+        break
+    #Deciding whether to stop, adjust aim forward, or adjust aim back
+    t = 2 * math.sin(theta_e) * v_m / g
+    new_target = [target[0] + target_velocity[0]*t, target[1] + target_velocity[1]*t]
+    delta_d = [new_target[0] - aim[0], new_target[1] - aim[1]]
+    if (aim[0] - new_target[0]) ** 2 + (aim[1] - new_target[1]) ** 2 <= r ** 2:
+    #Has the algorithm hit the target?
+        print("Horizontal Angle: " + str(math.degrees(theta_h)))
+        print("Angle of Elevation: " + str(math.degrees(theta_e)))
+        print("Travel time: " + str(t))
+        print("Interception location: " + str(aim))
+        break
+    elif target_velocity[0] * delta_d[0] >= 0 and target_velocity[1] * delta_d[1] >= 0:
+    #Is the aim behind the target?
+        if hone_in == True:
+            if increment < 0:
+                increment = -increment / 2
+            else:
+                increment = increment / 2
+        aim[0] += increment * target_velocity[0]
+        aim[1] += increment * target_velocity[1]
+    else:
+    #Is the aim in front of the target?
+        hone_in = True
+        if increment > 0:
+            increment = -increment / 2
+        else:
+            increment = increment / 2
+        aim[0] += increment * target_velocity[0]
+        aim[1] += increment * target_velocity[1]
+    print((aim[0] - new_target[0]) ** 2 + (aim[1] - new_target[1]) ** 2)
